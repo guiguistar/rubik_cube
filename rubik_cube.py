@@ -12,6 +12,8 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from pygame_gestion_clavier import Gestion_clavier
+
 # =============================================================================
 # Warning!
 # Il faudrait vraiment plus de dictionnaires dans ce code
@@ -380,10 +382,23 @@ class Rubik_cube:
                     cube.rotation_polyedre(op.sens * u * np.pi / 2, op.vecteur)
 
     # =============================================================================
+    def add_to_queue(self,op):
+        self.operations_queue.append(op)
+    # =============================================================================
+    def pygame_quit(self):
+        pygame.quit()
+        quit()
+    # =============================================================================
+    def restore_axes(self):
+        glLoadIdentity()
+        gluPerspective(45, self.ratio, 0.1, 50.0)
+        glTranslatef(0.0,0.0, -30) 
+
+    # =============================================================================
     # fmv : À mon avis, les variables globales peuvent etre exprimées dans la classe rubik_cube ...
     # fmv : l'affichage du rubik_cube est alors une methode de la classe
     # fmv : ou alors construire une parenté entre deux classes ( affichage et rubik ) 
-    def gestion_clavier(self,event):
+    def gerer_affichage_cube(self,gestion):
         
         # on définit les operations sur le rubik accessible par le clavier
         haut=Operation(name='haut',vecteur=[0,1,0],ligne='up',sens=-1)
@@ -396,43 +411,19 @@ class Rubik_cube:
         avant=Operation(name='avant',vecteur=[0,0,1],ligne='down',sens=-1)
         aam=Operation(name='aam',vecteur=[0,0,1],ligne='middle',sens=-1)
 
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            quit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:  self.fleche_gauche = True
-            if event.key == pygame.K_RIGHT: self.fleche_droite = True
-            if event.key == pygame.K_UP:    self.fleche_haut = True
-            if event.key == pygame.K_DOWN:  self.fleche_bas = True
-            if event.key == pygame.K_p:     self.touche_p = True
-            if event.key == pygame.K_m:     self.touche_m = True
-                        
-            if event.key == pygame.K_a:
-                glLoadIdentity()
-                gluPerspective(45, self.ratio, 0.1, 50.0)
-                glTranslatef(0.0,0.0, -30) 
+        gestion.add_key("e",self.add_to_queue(haut))
+        gestion.add_key("s",self.add_to_queue(hbm))
+        gestion.add_key("y",self.add_to_queue(bas))
+        gestion.add_key("r",self.add_to_queue(gauche))
+        gestion.add_key("d",self.add_to_queue(gdm))
+        gestion.add_key("x",self.add_to_queue(droite))
+        gestion.add_key("t",self.add_to_queue(avant))
+        gestion.add_key("f",self.add_to_queue(aam))
+        gestion.add_key("c",self.add_to_queue(arriere))
+        gestion.add_key("a",self.restore_axes)
+        gestion.add_key("q",self.pygame_quit)
 
-            if event.key == pygame.K_q:   
-                pygame.quit()
-                quit()
-                
-            if event.key == pygame.K_e: self.operations_queue.append(haut)
-            if event.key == pygame.K_s: self.operations_queue.append(hbm)
-            if event.key == pygame.K_y: self.operations_queue.append(bas)
-            if event.key == pygame.K_r: self.operations_queue.append(gauche)
-            if event.key == pygame.K_d: self.operations_queue.append(gdm)
-            if event.key == pygame.K_x: self.operations_queue.append(droite)
-            if event.key == pygame.K_t: self.operations_queue.append(avant)
-            if event.key == pygame.K_f: self.operations_queue.append(aam)
-            if event.key == pygame.K_c: self.operations_queue.append(arriere)
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:  self.fleche_gauche = False
-            if event.key == pygame.K_RIGHT: self.fleche_droite = False
-            if event.key == pygame.K_UP:    self.fleche_haut = False
-            if event.key == pygame.K_DOWN:  self.fleche_bas = False
-            if event.key == pygame.K_p:     self.touche_p = False
-            if event.key == pygame.K_m:     self.touche_m = False
 
 class Rubik_tetrahedron:
 
@@ -629,21 +620,25 @@ if __name__=='__main__':
     glTranslatef(0.0,0.0, -30) 
     glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
+    gestion_clavier=Gestion_clavier()
+    rubik_cube.gerer_affichage_cube(gestion_clavier)
+
     # ===================
     #   main event loop
     # ===================
     while True:
 
         # Gestion des événements clavier
-        for event in pygame.event.get(): rubik_cube.gestion_clavier(event)
+        #for event in pygame.event.get(): rubik_cube.gestion_clavier(event)
+        for event in pygame.event.get(): gestion_clavier.check_event_key(event)
         
         # Mouvements de la caméra
-        if rubik_cube.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
-        if rubik_cube.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
-        if rubik_cube.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
-        if rubik_cube.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
-        if rubik_cube.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
-        if rubik_cube.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
+        if gestion_clavier.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
+        if gestion_clavier.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
+        if gestion_clavier.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
+        if gestion_clavier.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
+        if gestion_clavier.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
+        if gestion_clavier.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
        
 
         # ======================================
