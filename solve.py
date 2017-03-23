@@ -5,14 +5,17 @@ import sys
 import os
 import copy
 
-import random
-import pygame
 import numpy as np
+import random
+
+import pygame
 from pygame.locals import *
-from rubik_cube import *
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
+
+from rubik_cube import *
+
 
 def test(rubik_cube):
     op1=Operation(name='test',vecteur=[1.,0.,0.],ligne='up',sens=-1.)
@@ -108,7 +111,7 @@ if __name__=='__main__':
     pas_rotation_operation = 0.2
 
     # instanciation du Rubik_cube
-    rubik_cube = Rubik_Cube(ratio=display[0]/display[1])
+    rubik_cube = Rubik_cube(ratio=display[0]/display[1])
     
     # pyOpenGl
     gluPerspective(45, rubik_cube.ratio, 0.1, 50.0)
