@@ -7,12 +7,23 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-class Gestion_camera():
+class Gestion_clavier():
 
 
     map_keys={}
+    map_keys['a']=pygame.K_a
+    map_keys['c']=pygame.K_c
+    map_keys['d']=pygame.K_d
     map_keys['e']=pygame.K_e
     map_keys['f']=pygame.K_f
+    map_keys['q']=pygame.K_q
+    map_keys['r']=pygame.K_r
+    map_keys['s']=pygame.K_s
+    map_keys['t']=pygame.K_t
+    map_keys['x']=pygame.K_x
+    map_keys['y']=pygame.K_y
+
+
 
     def __init__(self):
 
@@ -24,7 +35,7 @@ class Gestion_camera():
         self.touche_m = False
         self.keys=[]
 
-    def event_cam(self,event):
+    def check_event_key(self,event):
 
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -46,6 +57,7 @@ class Gestion_camera():
         
         if event.type == pygame.KEYDOWN:
             for key in self.keys:
+                print key
                 if event.key == self.map_keys[key[0]] : key[1]()  
 
 
@@ -53,13 +65,10 @@ class Gestion_camera():
         self.keys.append([key,fonction])
         print self.keys[-1]
 
-def test(event,camera):
-
-    camera.event_cam(event)
-    return
-
 def fonction_e():
     print "in fonction_e"
+def fonction_f():
+    print "in fonction_f"
 
 if __name__=="__main__":
 
@@ -71,13 +80,14 @@ if __name__=="__main__":
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
-    camera=Gestion_camera()
+    camera=Gestion_clavier()
 
     camera.add_key("e",fonction_e)
+    camera.add_key("f",fonction_f)
 
     while True:
         
-        for event in pygame.event.get(): test(event,camera)
+        for event in pygame.event.get(): camera.check_event_key(event)
 
         if camera.fleche_gauche: print "fleche gauche"
         if camera.fleche_droite: print "fleche droite" 
