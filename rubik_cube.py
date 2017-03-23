@@ -4,8 +4,9 @@
 import sys
 import os
 
-import pygame
 import numpy as np
+
+import pygame
 from pygame.locals import *
 
 from OpenGL.GL import *
@@ -296,9 +297,9 @@ class Polyedre:
         self.sommets[:] = [translation(sommet, vecteur) for sommet in self.sommets]
 
 # =============================================================================
-class Rubik_Cube:
+class Rubik_cube:
     '''
-    Classe Rubik_Cube : ... 
+    Classe Rubik_cube : ... 
     '''
 
     # =============================================================================
@@ -410,6 +411,10 @@ class Rubik_Cube:
                 glLoadIdentity()
                 gluPerspective(45, self.ratio, 0.1, 50.0)
                 glTranslatef(0.0,0.0, -30) 
+
+            if event.key == pygame.K_q:   
+                pygame.quit()
+                quit()
                 
             if event.key == pygame.K_e: self.operations_queue.append(haut)
             if event.key == pygame.K_s: self.operations_queue.append(hbm)
@@ -428,6 +433,170 @@ class Rubik_Cube:
             if event.key == pygame.K_DOWN:  self.fleche_bas = False
             if event.key == pygame.K_p:     self.touche_p = False
             if event.key == pygame.K_m:     self.touche_m = False
+
+class Rubik_tetrahedron:
+
+    '''
+    Classe Rubik_tetrahedron : ... 
+    '''
+    def __init__(self):
+        # Construction d'un tétraèdre de référence qui servira à tracer les axes de la pyramide
+        self.tetraedre_reference = Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre)
+        self.coeff_translation = 1.1 # Pour écarter un peu les différentes pièces, on les translate un peu plus
+        
+        # Construction des 10 tétraèdres de la pyramide
+        self.tetraedres = [
+            # Tétraèdres des centres des arêtes (translations du tétraèdre de référence par chacun des
+            # vecteurs demi-somme de couples d'extrémités; envisager une boucle
+            # A faire:
+            #  -modifier (mettre en blanc) les couleurs des faces invisibles de certains tétraèdre
+            #  -faire en sorte que les instructions tiennent sur une seule ligne
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [1,0,3,0],
+                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[0], sommets_tetraedre[1])]), 
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [1,0,0,4],
+                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[1], sommets_tetraedre[2])]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [0,2,0,4],
+                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[2], sommets_tetraedre[3])]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [0,2,3,0],
+                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[3], sommets_tetraedre[0])]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [1,2,0,0],
+                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[0], sommets_tetraedre[2])]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [0,0,3,4],
+                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[1], sommets_tetraedre[3])]),
+
+            # Tétraèdres des extrémités (translations du tétrèdre de base par chacun des vecteurs sommets); envisager une boucle
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [1,2,3,0],
+                     [2*s*self.coeff_translation for s in sommets_tetraedre[0]]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [1,0,3,4],
+                     [2*s*self.coeff_translation for s in sommets_tetraedre[1]]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [1,2,0,4],
+                     [2*s*self.coeff_translation for s in sommets_tetraedre[2]]),
+            Polyedre(sommets_tetraedre, aretes_tetraedre, faces_tetraedre, couleurs_aretes_tetraedre, [0,2,3,4],
+                     [2*s*self.coeff_translation for s in sommets_tetraedre[3]])
+
+        ]
+        # Constructions des 4 octaèdres (translations de l'octaèdre de référence par chacun des vecteurs sommet du tétraèdre de référence)
+        # Envisager une boucle
+        self.octaedres = [
+            Polyedre(sommets_octaedre, aretes_octaedre, faces_octaedre, couleurs_aretes_octaedre, [2,0,3,0,0,0,0,1],
+                     sommets_tetraedre[0], -np.arccos(np.sqrt(3)/3), [1,0,0]), 
+            Polyedre(sommets_octaedre, aretes_octaedre, faces_octaedre, couleurs_aretes_octaedre, [0,0,3,0,0,4,0,1],
+                     sommets_tetraedre[1], -np.arccos(np.sqrt(3)/3), [1,0,0]),
+            Polyedre(sommets_octaedre, aretes_octaedre, faces_octaedre, couleurs_aretes_octaedre, [2,0,0,0,0,4,0,1],
+                     sommets_tetraedre[2], -np.arccos(np.sqrt(3)/3), [1,0,0]),
+            Polyedre(sommets_octaedre, aretes_octaedre, faces_octaedre, couleurs_aretes_octaedre, [2,0,3,0,0,4,0,0],
+                     sommets_tetraedre[3], -np.arccos(np.sqrt(3)/3), [1,0,0])
+        ]
+        for i in range (0,4): self.octaedres[i].translation([(self.coeff_translation-1) * s for s in self.tetraedre_reference.sommets_initiaux[i]])
+    # Afficher la pyramide revient à afficher chacun de ses polyèdres
+    def afficher(self):
+        for octaedre in self.octaedres:
+            octaedre.afficher()
+        for tetraedre in self.tetraedres:
+            tetraedre.afficher()
+        self.tetraedre_reference.afficher_axes()
+    # Tourner la pyramide revient à tourner chacun de ses polyèdres
+    def rotation(self, angle, vecteur):
+        for octaedre in self.octaedres:
+            octaedre.rotation(angle, vecteur)
+        for tetraedre in self.tetraedres:
+            tetraedre.rotation(angle, vecteur)
+
+    # Pour les méthodes qui suivent et qui permettent de manipuler la pyramide,
+    # on teste à chaque fois chacun des 14 polyèdres pour savoir s'ils sont
+    # concernés par le mouvement effectué
+
+    # Revoir les tests sur les produits scalaires (cf tranlations pour séparer les pièces
+    # font éhouer les dits tests
+    
+    # Faire tourner les 2 couches du haut
+    def Haut(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if tetraedre.sommets[4][1] > 0: # Test sur l'ordonnée du centre de gravité
+                tetraedre.haut(u)
+        for octaedre in self.octaedres:
+            if octaedre.sommets[6][1] > 0: # Idem
+                octaedre.haut(u)
+    # Faire tourner le petit tétraèdre du haut
+    def haut(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if tetraedre.sommets[4][1] > 0 + np.sqrt(2.0/3):
+                tetraedre.haut(u)
+    # Faire tourner les 2 couches de gauche
+    def Gauche(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[1])) > 0: # Test sur le produit scalaire entre OG' et OG
+                tetraedre.gauche(u)
+        for octaedre in self.octaedres:
+            if sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[1])) > 0: # Idem 
+                octaedre.gauche(u)
+    # Faire tourner le petit tétraèdre de gauche
+    def gauche(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if tetraedre.sommets[4][0] < -0.7:
+                tetraedre.gauche(u)
+    # Faire tourner les 2 couches de droite
+    def Droite(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[2])) > 0: # Test sur le produit scalaire entre OG' et OG
+                tetraedre.droite(u)
+        for octaedre in self.octaedres:
+            if sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[2])) > 0: # Idem 
+                octaedre.droite(u)
+    # Faire tourner le petit tétraèdre de droite
+    def droite(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if tetraedre.sommets[4][0] > 0.7:
+                tetraedre.droite(u)
+    # Faire tourner les 2 couches du fond
+    def Fond(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[3])) > 0: # Test sur le produit scalaire entre OG' et OG
+                tetraedre.fond(u)
+        for octaedre in self.octaedres:
+            if sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[3])) > 0: # Idem 
+                octaedre.fond(u)
+    # Faire tourner le petit tétraèdre du fond
+    def fond(self, u = 1):
+        for tetraedre in self.tetraedres:
+            if tetraedre.sommets[4][2] < -0.7:
+                tetraedre.fond(u)
+def gestion_clavier(event, pyramide):
+    global fleche_gauche, fleche_droite, fleche_haut, fleche_bas, touche_p, touche_m
+    global ratio
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        quit()
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT:  fleche_gauche = True
+        if event.key == pygame.K_RIGHT: fleche_droite = True
+        if event.key == pygame.K_UP:    fleche_haut = True
+        if event.key == pygame.K_DOWN:  fleche_bas = True
+        if event.key == pygame.K_p:     touche_p = True
+        if event.key == pygame.K_m:     touche_m = True
+                    
+        if event.key == pygame.K_a:
+            glLoadIdentity()
+            gluPerspective(45, ratio, 0.1, 50.0)
+            glTranslatef(0.0,0.0, -8) 
+            
+                
+        if event.key == pygame.K_e: file_operations.append(pyramide.Haut)
+        if event.key == pygame.K_r: file_operations.append(pyramide.haut)
+        if event.key == pygame.K_q: file_operations.append(pyramide.Gauche)
+        if event.key == pygame.K_s: file_operations.append(pyramide.gauche)
+        if event.key == pygame.K_d: file_operations.append(pyramide.Fond)
+        if event.key == pygame.K_f: file_operations.append(pyramide.fond)
+        if event.key == pygame.K_g: file_operations.append(pyramide.Droite)
+        if event.key == pygame.K_h: file_operations.append(pyramide.droite)
+                
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_LEFT:  fleche_gauche = False
+        if event.key == pygame.K_RIGHT: fleche_droite = False
+        if event.key == pygame.K_UP:    fleche_haut = False
+        if event.key == pygame.K_DOWN:  fleche_bas = False
+        if event.key == pygame.K_p:     touche_p = False
+        if event.key == pygame.K_m:     touche_m = False
 
 
 if __name__=='__main__':
@@ -450,8 +619,9 @@ if __name__=='__main__':
     # correspond à la varible u dans transformer_rubik
     pas_rotation_operation = 0.2
 
+    
     # instanciation du Rubik_cube
-    rubik_cube = Rubik_Cube(ratio=display[0]/display[1])
+    rubik_cube = Rubik_cube(ratio=display[0]/display[1])
     
 
     # pyOpenGl
@@ -499,4 +669,5 @@ if __name__=='__main__':
         pygame.display.flip()
 
         #pygame.time.wait(10) # Enlevable
+
 
