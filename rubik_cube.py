@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import sys
+import os
 
 import pygame
 import numpy as np
@@ -13,15 +15,39 @@ from OpenGL.GLU import *
 # Warning!
 # Il faudrait vraiment plus de dictionnaires dans ce code
 # fmv : je suis d'accord avec ce warning !
+# fmv :
 # =============================================================================
 
 # ========================
 # Transformations utiles #
 # ========================
 
+class Operation: 
+    '''
+    class Operation :
+    Cette classe permet de construire une opération de transformation du cube de Rubik
+    Chaque transformation est définit par un vecteur x,y,z; une ligne 'up','middle','down' et un sens de 
+    rotation + et -
+
+    on définit deux méthodes :
+        __repr__ : pour le print de la classe
+        inverse  : le sens de rotation de l'opération
+    '''
+    def __init__(self,name='',vecteur=[1,0,0],ligne='up',sens=1.):
+
+        self.name=name
+        self.vecteur=vecteur
+        self.ligne=ligne
+        self.sens=sens
+
+    def __repr__(self):
+        return "{}:  vecteur= {}, ligne= {}, sens= {}".format(self.name,self.vecteur,self.ligne,self.sens)
+
+    def inverse(self):
+        self.sens=-self.sens
 
 # =============================================================================
-# Rotation
+# rotation
 # Entrées:
 #  -sommet: le point à faire tourner. C'est une liste de trois floats, exemple: sommet = [1,2.5,3]
 #  -angle: l'angle en radians (sens trionométrique) de la rotation
@@ -30,29 +56,28 @@ from OpenGL.GLU import *
 #  -une liste de trois points contenant les coordonnées de l'image de sommet par la rotation
 #
 # Voir https://fr.wikipedia.org/wiki/Matrice_de_rotation#En_dimension_trois si besoin
-def Rotation(sommet, angle, vecteur):
-
+def rotation(sommet, angle, vecteur):
+    
     c = np.cos(angle)
     s = np.sin(angle)
     norme = np.sqrt(vecteur[0]**2 + vecteur[1]**2 + vecteur[2]**2)
-
+    
     # [x, y, z] doit être normé
     x = vecteur[0] / norme
     y = vecteur[1] / norme
     z = vecteur[2] / norme
+        
+    R = [[x**2*(1.-c) +   c, x *y*(1.-c) - z*s, x *z*(1.-c) + y*s],
+         [x *y*(1.-c) + z*s, y**2*(1.-c) + c  , y *z*(1.-c) - x*s],
+         [x *z*(1.-c) - y*s, y *z*(1.-c) + x*s, z**2*(1.-c) + c]]
     
-    R = [[x**2*(1-c) +   c, x *y*(1-c) - z*s, x *z*(1-c) + y*s],
-         [x *y*(1-c) + z*s, y**2*(1-c) + c  , y *z*(1-c) - x*s],
-         [x *z*(1-c) - y*s, y *z*(1-c) + x*s, z**2*(1-c) + c]]
-
     return np.dot(R, np.transpose(sommet))
 # =============================================================================
-# Translation #
+# translation #
 # Comme la rotation mais en plus simple
-def Translation(sommet, vecteur):
+def translation(sommet, vecteur):
     return [sommet[0] + vecteur[0], sommet[1] + vecteur[1], sommet[2] + vecteur[2]]
-
-
+    
 
 
 # =============================================================================
@@ -202,19 +227,17 @@ couleurs_faces_faces = [
 ]
 
 
-# =============================================================================
-# =============================================================================
 
+# =============================================================================
 class Polyedre:
     '''
     Classe Polyedre : ... 
     '''
+
     # =============================================================================
     def __init__(self, 
                  sommets, 
-   #              aretes,
                  faces,
-   #              couleurs_aretes, # Liste des couleurs des arêtes
                  couleurs_faces, # Liste des couleurs des faces
                  vecteur_position = [0, 0, 0],
                  angle = 0,
@@ -223,18 +246,18 @@ class Polyedre:
         # Attention à cloner la liste (qui est passée par référence)
         self.sommets = list(sommets_cube) 
 
-        #self.aretes = aretes
         self.faces = faces
         
-        #self.couleurs_aretes = couleurs_aretes
         self.couleurs_faces = couleurs_faces
 
         # Attention ici: la rotation initiale est effectuée avant la translation initiale
         # fmv : pourquoi ?
-        self.rotation(angle, vecteur_rotation)
-        self.translation(vecteur_position)
-        
-        self.sommets_initiaux = list(self.sommets) # Pour afficher les axes du polyèdres
+        self.rotation_polyedre(angle, vecteur_rotation)
+        self.translation_polyedre(vecteur_position)
+       
+        # fmv : ?? ce commentaire
+        # Pour afficher les axes du polyèdres 
+        self.sommets_initiaux = list(self.sommets) 
 
     # =============================================================================
     def afficher_axes(self):
@@ -265,12 +288,13 @@ class Polyedre:
         self.afficher_faces()
         #self.afficher_aretes() # Gagne énormément en fluidité
     # =============================================================================
-    def rotation(self, angle, vecteur):
-        self.sommets[:] = [Rotation(sommet, angle, vecteur) for sommet in self.sommets]
+    def rotation_polyedre(self, angle, vecteur):
+        self.sommets[:] = [rotation(sommet, angle, vecteur) for sommet in self.sommets]
     # =============================================================================
-    def translation(self, vecteur):
-        self.sommets[:] = [Translation(sommet, vecteur) for sommet in self.sommets]
+    def translation_polyedre(self, vecteur):
+        self.sommets[:] = [translation(sommet, vecteur) for sommet in self.sommets]
 
+# =============================================================================
 class Rubik_Cube:
     '''
     Classe Rubik_Cube : ... 
@@ -278,10 +302,18 @@ class Rubik_Cube:
 
     # =============================================================================
     def __init__(self,ratio):
+
+        self.fleche_gauche = False
+        self.fleche_droite = False
+        self.fleche_haut = False
+        self.fleche_bas = False
+        self.touche_p = False
+        self.touche_m = False
         self.ratio = ratio
-        self.file_operations=[]
+        self.operations_queue=[]
+
         # Pour écarter un peu les différentes pièces, on les translate un peu plus
-        self.coeff_translation = 1.05 
+        self.coeff_translation = 1.1 
         
         # Construction des 27 cubes du Rubik's cube (le cube central est là)
         self.cubes = []
@@ -289,27 +321,21 @@ class Rubik_Cube:
         # Cubes au centre des aretes (12)
         for i, arete in enumerate(aretes_cube):
             self.cubes.append(Polyedre(sommets_cube,
-        #                               aretes_cube,
                                        faces_cube,
-        #                               [7,7,7,7,7,7,7,7,7,7,7,7,7],
                                        couleurs_faces_aretes[i],
                                        [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_cube[arete[0]], sommets_cube[arete[1]])]))
 
         # Cubes des coins (8) + le sommet d'indice 8 qui est le centre de garvité
         for i, sommet in enumerate(sommets_cube):
             self.cubes.append(Polyedre(sommets_cube, 
-        #                               aretes_cube,
                                        faces_cube,
-        #                               [7,7,7,7,7,7,7,7,7,7,7,7,7],
                                        couleurs_faces_coins[i],
                                        [2*c * self.coeff_translation for c in sommet]))
 
         # Cubes des milieux des faces
         for i, face in enumerate(faces_cube):
             self.cubes.append(Polyedre(sommets_cube, 
-        #                               aretes_cube,
                                        faces_cube,
-        #                               [7,7,7,7,7,7,7,7,7,7,7,7,7],
                                        couleurs_faces_faces[i],
                                        [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_cube[face[0]], sommets_cube[face[2]])]))
         
@@ -318,79 +344,56 @@ class Rubik_Cube:
     def afficher(self):
         for cube in self.cubes:
             cube.afficher()
-        # self.cube_reference.afficher_axes()
+        #self.cube_reference.afficher_axes() # encore besoin ?
 
     # =============================================================================
     # Tourner le rubik revient à tourner chacun de ses cubes
-    def rotation(self, angle, vecteur):
+    # fmv : n'est pas/plus utilisé
+    def rotation_rubik(self, angle, vecteur):
         for cube in self.cubes:
-            cube.rotation(angle, vecteur)
+            cube.rotation_polyedre(angle, vecteur)
    
     # =============================================================================
-    # possible modif fmv : 
-    # une fonction pour toute 
-    # vecteur : vecteur rotation
-    # spin    : + ou - up/down
-    # probleme je n'arrive pas à comprendre comment se comporte u dans cette fonction ?
-    # u disparait de l'appel des fonctions haut,bas,... ci dessous dans la fonction main
-    def tourner_couche(self, u=1, vecteur=[1,0,0] , spin='+' ) :
-        for i,e in enumerate(vecteur) :
+    # op : Objet de la classe Operation :
+    #   op.vecteur : vecteur rotation
+    #   op.ligne   : up/down
+    #   op.sens    : +1,-1 sens de la rotation 
+    def transformer_rubik(self, op, u=1) :
+       
+        # on determine k : l'indice non nul du vecteur de rotation
+        for i,e in enumerate(op.vecteur) :
             if e != 0 : 
                 k=i
-        print k
-        if spin == '+' :
+        if op.ligne == 'up' :
             for cube in self.cubes:
                 if cube.sommets[8][k] > self.coeff_translation:
-                    cube.rotation(-u * np.pi / 2, vecteur)
-        if spin == '-' :
+                    cube.rotation_polyedre(op.sens * u * np.pi / 2, op.vecteur)
+        if op.ligne == 'down' :
             for cube in self.cubes:
                 if cube.sommets[8][k] < -self.coeff_translation:
-                    cube.rotation(-u * np.pi / 2, vecteur)
+                    cube.rotation_polyedre(op.sens * u * np.pi / 2, op.vecteur)
+        if op.ligne == 'middle' :
+            for cube in self.cubes:
+                if cube.sommets[8][k] > -self.coeff_translation and cube.sommets[8][k] < self.coeff_translation:
+                    cube.rotation_polyedre(op.sens * u * np.pi / 2, op.vecteur)
 
-    # =============================================================================
-    # Faire tourner la couche du haut
-    def haut(self, u = 1):
-        for cube in self.cubes:
-            if cube.sommets[8][1] > self.coeff_translation:
-                cube.rotation(-u * np.pi / 2, [0, 1, 0])
-    # =============================================================================
-    # Faire tourner la couche du bas
-    def bas(self, u = 1):
-        for cube in self.cubes:
-            if cube.sommets[8][1] < -self.coeff_translation:
-                cube.rotation(-u * np.pi / 2, [0, 1, 0])
-    # =============================================================================
-    # Faire tourner la couche de gauche
-    def gauche(self, u = 1):
-        for cube in self.cubes:
-            if cube.sommets[8][0] < -self.coeff_translation:
-                cube.rotation(-u * np.pi / 2, [1, 0, 0])
-    # =============================================================================
-    # Faire tourner la couche de droite
-    def droite(self, u = 1):
-        for cube in self.cubes:
-            if cube.sommets[8][0] > self.coeff_translation:
-                cube.rotation(-u * np.pi / 2, [1, 0, 0])
-    # =============================================================================
-    # Faire tourner la couche de arriere
-    def arriere(self, u = 1):
-        for cube in self.cubes:
-            if cube.sommets[8][2] < -self.coeff_translation:
-                cube.rotation(-u * np.pi / 2, [0, 0, 1])
-    # =============================================================================
-    # Faire tourner la couche de avant
-    def avant(self, u = 1):
-        for cube in self.cubes:
-            if cube.sommets[8][2] > self.coeff_translation:
-                cube.rotation(-u * np.pi / 2, [0, 0, 1])
     # =============================================================================
     # fmv : À mon avis, les variables globales peuvent etre exprimées dans la classe rubik_cube ...
     # fmv : l'affichage du rubik_cube est alors une methode de la classe
     # fmv : ou alors construire une parenté entre deux classes ( affichage et rubik ) 
-    def gestion_clavier(self,event, rubik_cube):
-        # Méditer sur ces variables globales
-   #     global fleche_gauche, fleche_droite, fleche_haut, fleche_bas, touche_p, touche_m
-    #    global ratio
+    def gestion_clavier(self,event):
+        
+        # on définit les operations sur le rubik accessible par le clavier
+        haut=Operation(name='haut',vecteur=[0,1,0],ligne='up',sens=-1)
+        bas=Operation(name='bas',vecteur=[0,1,0],ligne='down',sens=-1)
+        hbm=Operation(name='hbm',vecteur=[0,1,0],ligne='middle',sens=-1)
+        gauche=Operation(name='gauche',vecteur=[1,0,0],ligne='up',sens=-1)
+        droite=Operation(name='droite',vecteur=[1,0,0],ligne='down',sens=-1)
+        gdm=Operation(name='gdm',vecteur=[1,0,0],ligne='middle',sens=-1)
+        arriere=Operation(name='arriere',vecteur=[0,0,1],ligne='up',sens=-1)
+        avant=Operation(name='avant',vecteur=[0,0,1],ligne='down',sens=-1)
+        aam=Operation(name='aam',vecteur=[0,0,1],ligne='middle',sens=-1)
+
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
@@ -407,19 +410,15 @@ class Rubik_Cube:
                 gluPerspective(45, self.ratio, 0.1, 50.0)
                 glTranslatef(0.0,0.0, -30) 
                 
-            if event.key == pygame.K_e: self.file_operations.append(rubik_cube.haut)
-            if event.key == pygame.K_s: self.file_operations.append(rubik_cube.gauche)
-            if event.key == pygame.K_c: self.file_operations.append(rubik_cube.bas)
-            if event.key == pygame.K_f: self.file_operations.append(rubik_cube.droite)
-            if event.key == pygame.K_g: self.file_operations.append(rubik_cube.avant)
-            if event.key == pygame.K_v: self.file_operations.append(rubik_cube.arriere)
-
-            #if event.key == pygame.K_e: file_operations.append(rubik_cube.tourner_couche([0,1,0],'+'))
-            #if event.key == pygame.K_s: file_operations.append(rubik_cube.tourner_couche([0,1,0],'-'))
-            #if event.key == pygame.K_c: file_operations.append(rubik_cube.tourner_couche([1,0,0],'+'))
-            #if event.key == pygame.K_f: file_operations.append(rubik_cube.tourner_couche([1,0,0],'-'))
-            #if event.key == pygame.K_g: file_operations.append(rubik_cube.tourner_couche([0,0,1],'+'))
-            #if event.key == pygame.K_v: file_operations.append(rubik_cube.tourner_couche([0,0,1],'-'))
+            if event.key == pygame.K_e: self.operations_queue.append(haut)
+            if event.key == pygame.K_s: self.operations_queue.append(hbm)
+            if event.key == pygame.K_y: self.operations_queue.append(bas)
+            if event.key == pygame.K_r: self.operations_queue.append(gauche)
+            if event.key == pygame.K_d: self.operations_queue.append(gdm)
+            if event.key == pygame.K_x: self.operations_queue.append(droite)
+            if event.key == pygame.K_t: self.operations_queue.append(avant)
+            if event.key == pygame.K_f: self.operations_queue.append(aam)
+            if event.key == pygame.K_c: self.operations_queue.append(arriere)
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:  self.fleche_gauche = False
@@ -431,78 +430,72 @@ class Rubik_Cube:
 
 
 if __name__=='__main__':
+
     # pygame
-    display = (600,600)
-    mon_rubik_cube = Rubik_Cube(ratio=display[0]/display[1])
-    
-    # Instanciation du repère et de la rubik_cube
-    
-    # test : un seul cube
-    #mon_cube = Polyedre(sommets_cube, aretes_cube, faces_cube, 
-    #[0,0,0,0,0,0,0,0,0,0,0,0], [0,1,2,3,4,5]);
-    
-    # Clavier (touches pour faire tourner la caméra)
-    #global fleche_gauche, fleche_droite, fleche_haut, fleche_bas, touche_p, touche_m
-    
-    mon_rubik_cube.fleche_gauche = False
-    mon_rubik_cube.fleche_droite = False
-    mon_rubik_cube.fleche_haut = False
-    mon_rubik_cube.fleche_bas = False
-    mon_rubik_cube.touche_p = False
-    mon_rubik_cube.touche_m = False
-
-    # fmv : en fait cette valeur est bien trop basse à 1
-    pas_rotation_camera = 10 # ~vitesse de rotation de la caméra
-    
-    # Transition des opérations
-    # Clarifier le nom des variables
-
-    #global file_operations
-    
-    #file_operations = [] # Liste qui sert de file pour les différentes opérations (Haut, droite, ...)
-    taux_transition_operation = 0 # Pour tester quand une opération est complète; voir ci-après
-    pas_rotation_operation = 0.1 # pas pour les opérations
-
     pygame.init()
+    display = (600,600)
+    infopygame = pygame.display.Info()
+
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    
+    # fmv : en fait cette valeur est bien trop basse à 1
+    # vitesse de rotation de la caméra
+    pas_rotation_camera = 10 # ~vitesse de rotation de la caméra
+    # Pour tester quand une opération est complète; voir ci-après
+    taux_transition_operation = 0 
+    # pas de rotation pour les operations 10% 
+    # fmv : 20% c'est pas mal chez moi
+    # correspond à la varible u dans transformer_rubik
+    pas_rotation_operation = 0.2
+
+    # instanciation du Rubik_cube
+    rubik_cube = Rubik_Cube(ratio=display[0]/display[1])
+    
 
     # pyOpenGl
-    gluPerspective(45, mon_rubik_cube.ratio, 0.1, 50.0)
+    gluPerspective(45, rubik_cube.ratio, 0.1, 50.0)
     glTranslatef(0.0,0.0, -30) 
     glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
+    # ===================
+    #   main event loop
+    # ===================
     while True:
+
         # Gestion des événements clavier
-        for event in pygame.event.get(): mon_rubik_cube.gestion_clavier(event, mon_rubik_cube)
-        #for event in pygame.event.get(): mon_rubik_cube.gestion_clavier(event, mon_cube)
+        for event in pygame.event.get(): rubik_cube.gestion_clavier(event)
         
         # Mouvements de la caméra
-        if mon_rubik_cube.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
-        if mon_rubik_cube.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
-        if mon_rubik_cube.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
-        if mon_rubik_cube.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
-        if mon_rubik_cube.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
-        if mon_rubik_cube.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
-        
+        if rubik_cube.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
+        if rubik_cube.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
+        if rubik_cube.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
+        if rubik_cube.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
+        if rubik_cube.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
+        if rubik_cube.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
+       
+
+        # ======================================
         # Gestion des animations des opérations
+        # ======================================
         if taux_transition_operation == 0:
-            if(len(mon_rubik_cube.file_operations) > 0): # Si une opération est dans la file
-                operation_courante = mon_rubik_cube.file_operations.pop(0)
+            # Si une opération est dans la queue
+            if(len(rubik_cube.operations_queue) > 0): 
+                operation_courante = rubik_cube.operations_queue.pop(0)
                 taux_transition_operation += pas_rotation_operation
-        elif taux_transition_operation > 1.05: # >= (1 + pas_rotation_camera) en réalité, mais on gagne un calcul
-            taux_transition_operation = 0 # Plus besoin de tourner, la transformation est finie
+        # >= (1 + pas_rotation_camera) en réalité, mais on gagne un calcul
+        elif taux_transition_operation > 1.05:
+            # Plus besoin de tourner, la transformation est finie
+            taux_transition_operation = 0 
         else:
-            operation_courante(pas_rotation_operation)
+            rubik_cube.transformer_rubik(op=operation_courante,u=pas_rotation_operation)
             taux_transition_operation += pas_rotation_operation
 
         # Mise à jour de l'affichage
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        # test un seul cube 
-        # mon_cube.afficher()
-
-        mon_rubik_cube.afficher()
+        rubik_cube.afficher()
         pygame.display.flip()
 
-        pygame.time.wait(10) # Enlevable
+        #pygame.time.wait(10) # Enlevable
 
