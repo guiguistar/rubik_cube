@@ -57,17 +57,19 @@ class Gestion_clavier():
         
         if event.type == pygame.KEYDOWN:
             for key in self.keys:
-                print key
-                if event.key == self.map_keys[key[0]] : key[1]()  
+#                print key
+                if event.key == self.map_keys[key[0]] : key[1](key[2])  
 
 
-    def add_key(self,key,fonction):
-        self.keys.append([key,fonction])
-        print self.keys[-1]
+    def add_key(self,key,fonction,args):
+        self.keys.append([key,fonction,args])
+#        print self.keys[-1]
 
-def fonction_e():
+def fonction_e(args):
+    print len(args)
     print "in fonction_e"
-def fonction_f():
+def fonction_f(args):
+    print len(args)
     print "in fonction_f"
 
 if __name__=="__main__":
@@ -82,8 +84,8 @@ if __name__=="__main__":
 
     camera=Gestion_clavier()
 
-    camera.add_key("e",fonction_e)
-    camera.add_key("f",fonction_f)
+    camera.add_key("e",fonction_e,['arg1','arg2'])
+    camera.add_key("f",fonction_f,[])
 
     while True:
         
