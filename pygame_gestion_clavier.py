@@ -71,6 +71,9 @@ def fonction_e(args):
 def fonction_f(args):
     print len(args)
     print "in fonction_f"
+def fonction_quit(args):
+    pygame.quit()
+    quit()
 
 if __name__=="__main__":
 
@@ -86,6 +89,7 @@ if __name__=="__main__":
 
     camera.add_key("e",fonction_e,['arg1','arg2'])
     camera.add_key("f",fonction_f,[])
+    camera.add_key("q",fonction_quit,[])
 
     while True:
         

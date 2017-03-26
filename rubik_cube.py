@@ -38,6 +38,7 @@ class Rubik_cube:
         # Cubes au centre des aretes (12)
         for i, arete in enumerate(aretes_cube):
             self.cubes.append(Polyedre(sommets_cube,
+                                       aretes_cube,
                                        faces_cube,
                                        couleurs_faces_aretes_cube[i],
                                        [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_cube[arete[0]], sommets_cube[arete[1]])]))
@@ -47,6 +48,7 @@ class Rubik_cube:
             # pas le centre de gravité
             if i != 8 :
                 self.cubes.append(Polyedre(sommets_cube, 
+                                           aretes_cube,
                                            faces_cube,
                                            couleurs_faces_coins_cube[i],
                                            [2*c * self.coeff_translation for c in sommet]))
@@ -54,6 +56,7 @@ class Rubik_cube:
         # Cubes des milieux des faces
         for i, face in enumerate(faces_cube):
             self.cubes.append(Polyedre(sommets_cube, 
+                                       aretes_cube,
                                        faces_cube,
                                        couleurs_faces_faces_cube[i],
                                        [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_cube[face[0]], sommets_cube[face[2]])]))
