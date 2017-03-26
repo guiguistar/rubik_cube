@@ -224,7 +224,13 @@ sommets_tetraedre = [
     [ 0.  , -0.25 * np.sqrt(2.0/3.), -np.sqrt(3.) / 3.], # D (fond)
     [ 0.  ,  0.                    , 0.               ]  # Centre de gravité
     ]
+
 # Les arêtes sont des couples de sommets
+#        A           0 
+#       /|\         /|\
+#      / D \       / 3 \
+#     B-----C     1-----2
+#
 aretes_tetraedre = [
     [0,1], [0,2], [0,3], # Arêtes joignant les sommets du triangle de base au "sommet": [AB], [AC] et [AD]
     [1,2], [2,3], [3,1] # Triangle de base: BCD
@@ -235,20 +241,20 @@ faces_tetraedre = [
     [1,2,3] # Base: BCD
 ]
 couleurs_aretes_tetraedre = [10,10,10,10,10,10,10]
-couleurs_faces_coins_tetraedre = [
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4]
-        ]
 couleurs_faces_aretes_tetraedre = [
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4],
-        [1,2,3,4]
+        [1,0,6,0],
+        [1,5,0,0],
+        [0,5,6,0],
+        [1,0,0,3],
+        [0,5,0,3],
+        [0,0,6,3]
+        ]
+couleurs_faces_coins_tetraedre = [
+        [1,5,6,0],
+        [1,0,6,3],
+        [1,5,0,3],
+        [0,5,6,3],
+        [0,0,0,0]
         ]
 #-------------------------#
 # L'octaèdre de référence #
@@ -264,13 +270,13 @@ couleurs_faces_aretes_tetraedre = [
 #           5 
 #
 sommets_octaedre = [
-    [0, np.sqrt(2)/2, 0], # Le "sommet du haut"
-    [0.5, 0, 0.5], # Avant droit
-    [0.5, 0, -0.5], # Arrière droit
-    [-0.5, 0, -0.5], # Arrière gauche
-    [-0.5, 0, 0.5], # Avant gauche
-    [0, -np.sqrt(2)/2, 0], # Le "sommet du bas"
-    [0, 0, 0] # Centre de gravité
+    [0., np.sqrt(2.)/2., 0.], # Le "sommet du haut"
+    [0.5, 0., 0.5], # Avant droit
+    [0.5, 0., -0.5], # Arrière droit
+    [-0.5, 0., -0.5], # Arrière gauche
+    [-0.5, 0., 0.5], # Avant gauche
+    [0., -np.sqrt(2.)/2., 0.], # Le "sommet du bas"
+    [0., 0., 0.] # Centre de gravité
 ]
 # Les arêtes sont des couples de sommets
 aretes_octaedre = [
@@ -286,9 +292,9 @@ faces_octaedre = [
 couleurs_aretes_octaedre = [10,10,10,10,10,10,10,10,10,10,10,10]
 
 couleurs_faces_octaedre=[
-        [2,0,3,0,0,0,0,1],
-        [2,0,3,0,0,0,0,1],
-        [2,0,3,0,0,0,0,1],
-        [2,0,3,0,0,0,0,1],
+        [5,0,6,0,0,0,0,1],
+        [0,0,6,0,0,3,0,1],
+        [5,0,0,0,0,3,0,1],
+        [5,0,6,0,0,3,0,0],
         [0,0,0,0,0,0,0,0]
 ]
