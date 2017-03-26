@@ -15,7 +15,7 @@ from OpenGL.GLU import *
 from op_transformations import Operation
 from polyedre import Polyedre
 from pygame_gestion_clavier import Gestion_clavier
-from rubik import aretes_cube,sommets_cube,faces_cube,couleurs_faces_aretes,couleurs_faces_coins,couleurs_faces_faces
+from rubik import aretes_cube, sommets_cube, faces_cube, couleurs_faces_aretes_cube, couleurs_faces_coins_cube, couleurs_faces_faces_cube
 
 # =============================================================================
 class Rubik_cube:
@@ -39,21 +39,23 @@ class Rubik_cube:
         for i, arete in enumerate(aretes_cube):
             self.cubes.append(Polyedre(sommets_cube,
                                        faces_cube,
-                                       couleurs_faces_aretes[i],
+                                       couleurs_faces_aretes_cube[i],
                                        [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_cube[arete[0]], sommets_cube[arete[1]])]))
 
         # Cubes des coins (8) + le sommet d'indice 8 qui est le centre de garvité
         for i, sommet in enumerate(sommets_cube):
-            self.cubes.append(Polyedre(sommets_cube, 
-                                       faces_cube,
-                                       couleurs_faces_coins[i],
-                                       [2*c * self.coeff_translation for c in sommet]))
+            # pas le centre de gravité
+            if i != 8 :
+                self.cubes.append(Polyedre(sommets_cube, 
+                                           faces_cube,
+                                           couleurs_faces_coins_cube[i],
+                                           [2*c * self.coeff_translation for c in sommet]))
 
         # Cubes des milieux des faces
         for i, face in enumerate(faces_cube):
             self.cubes.append(Polyedre(sommets_cube, 
                                        faces_cube,
-                                       couleurs_faces_faces[i],
+                                       couleurs_faces_faces_cube[i],
                                        [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_cube[face[0]], sommets_cube[face[2]])]))
         
     # =============================================================================

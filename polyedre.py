@@ -38,12 +38,11 @@ class Polyedre:
         
         self.couleurs_faces = couleurs_faces
 
+        print vecteur_position
         # Attention ici: la rotation initiale est effectuée avant la translation initiale
-        # fmv : pourquoi ?
         self.rotation_polyedre(angle, vecteur_rotation)
         self.translation_polyedre(vecteur_position)
        
-        # fmv : ?? ce commentaire
         # Pour afficher les axes du polyèdres 
         self.sommets_initiaux = list(self.sommets) 
 
@@ -67,6 +66,7 @@ class Polyedre:
     def afficher_faces(self):
         glBegin(GL_QUADS)
         for couleur, face in enumerate(self.faces):
+            #print couleur,face,self.couleurs_faces
             glColor3fv(couleurs_rubik[self.couleurs_faces[couleur]])
             for sommet in face:
                 glVertex3fv(self.sommets[sommet])

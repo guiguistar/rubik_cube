@@ -15,7 +15,7 @@ from OpenGL.GLU import *
 from op_transformations import Operation
 from polyedre import Polyedre
 from pygame_gestion_clavier import Gestion_clavier
-from rubik import couleurs_rubik,sommets_tetraedre,aretes_tetraedre,faces_tetraedre,couleurs_aretes_tetraedre,sommets_octaedre,faces_octaedre
+from rubik import couleurs_rubik,sommets_tetraedre,aretes_tetraedre,faces_tetraedre,couleurs_aretes_tetraedre,sommets_octaedre,faces_octaedre,couleurs_faces_aretes_tetraedre,couleurs_faces_octaedre,couleurs_faces_coins_tetraedre
 
 # =============================================================================
 class Rubik_tetrahedron:
@@ -38,7 +38,7 @@ class Rubik_tetrahedron:
         #print "after tetraedre_reference"
         self.coeff_translation = 1.1 # Pour écarter un peu les différentes pièces, on les translate un peu plus
 
-        self.tetraedres = [
+        self.tetraedres = []
             # Tétraèdres des centres des arêtes (translations du tétraèdre de référence par chacun des
             # vecteurs demi-somme de couples d'extrémités; envisager une boucle
             # A faire:
@@ -49,42 +49,24 @@ class Rubik_tetrahedron:
 #    [0,1,0], # Vert  2-> 6
 #    [0,0,1], # Bleu  3-> 5
 #    [1,1,0], # Jaune 4-> 3 
-            Polyedre(sommets_tetraedre, faces_tetraedre, [1,4,5,4],
-                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[0], sommets_tetraedre[1])]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [1,4,4,3],
-                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[1], sommets_tetraedre[2])]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [4,6,4,3],
-                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[2], sommets_tetraedre[3])]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [0,2,3,0],
-                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[3], sommets_tetraedre[0])]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [1,2,0,0],
-                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[0], sommets_tetraedre[2])]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [0,0,3,4],
-                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[1], sommets_tetraedre[3])]),
+        for i, arete in enumerate(aretes_tetraedre):
+            self.tetraedres.append(Polyedre(sommets_tetraedre, faces_tetraedre, couleurs_faces_aretes_tetraedre[i],
+                                     [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[arete[0]], sommets_tetraedre[arete[1]])]))
 
-            # Tétraèdres des extrémités (translations du tétrèdre de base par chacun des vecteurs sommets); envisager une boucle
-            Polyedre(sommets_tetraedre, faces_tetraedre, [1,2,3,0],
-                     [2*s*self.coeff_translation for s in sommets_tetraedre[0]]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [1,0,3,4],
-                     [2*s*self.coeff_translation for s in sommets_tetraedre[1]]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [1,2,0,4],
-                     [2*s*self.coeff_translation for s in sommets_tetraedre[2]]),
-            Polyedre(sommets_tetraedre, faces_tetraedre, [0,2,3,4],
-                     [2*s*self.coeff_translation for s in sommets_tetraedre[3]])
+        for i,sommet in enumerate(sommets_tetraedre):
+            # xfmvx pas le centre de gravité
+            if i != 4 :
+                self.tetraedres.append(Polyedre(sommets_tetraedre, faces_tetraedre, couleurs_faces_coins_tetraedre[i],
+                                         [2*s*self.coeff_translation for s in sommet]))
 
-        ]
+        print len(self.tetraedres)
+        sys.exit()
         # Constructions des 4 octaèdres (translations de l'octaèdre de référence par chacun des vecteurs sommet du tétraèdre de référence)
         # Envisager une boucle
-        self.octaedres = [
-            Polyedre(sommets_octaedre, faces_octaedre, [2,0,3,0,0,0,0,1],
-                     sommets_tetraedre[0], -np.arccos(np.sqrt(3)/3), [1,0,0]),
-            Polyedre(sommets_octaedre, faces_octaedre, [0,0,3,0,0,4,0,1],
-                     sommets_tetraedre[1], -np.arccos(np.sqrt(3)/3), [1,0,0]),
-            Polyedre(sommets_octaedre, faces_octaedre, [2,0,0,0,0,4,0,1],
-                     sommets_tetraedre[2], -np.arccos(np.sqrt(3)/3), [1,0,0]),
-            Polyedre(sommets_octaedre, faces_octaedre, [2,0,3,0,0,4,0,0],
-                     sommets_tetraedre[3], -np.arccos(np.sqrt(3)/3), [1,0,0])
-        ]
+        self.octaedres = []
+        for i, sommet in enumerate(sommets_tetraedre):
+            self.octaedres.append ( Polyedre(sommets_octaedre, faces_octaedre, couleurs_faces_octaedre[i],
+                                     sommet, -np.arccos(np.sqrt(3)/3), [1,0,0]) )
  
     # =============================================================================
     # Afficher le rubik revient à afficher chacun de ses polyedres 
@@ -174,7 +156,7 @@ class Rubik_tetrahedron:
 
         for tetraedre in self.tetraedres:
             if tetraedre.sommets[4][2] < -0.7:
-                tetraedre.rotation_polyedre(u * 2 * np.pi / 3,op.vecteur)
+                tetraedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
 
 
     # =============================================================================
@@ -199,10 +181,26 @@ class Rubik_tetrahedron:
     #    def gauche(self, u = 1): self.rotation(u * 2 * np.pi / 3, sommets_tetraedre[1])
     #    def droite(self, u = 1): self.rotation(u * 2 * np.pi / 3, sommets_tetraedre[2])
         # on définit les operations sur le rubik accessible par le clavier
-#        haut=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='up',sens=-1)
+#sommets_tetraedre = [
+#    [0, 0.75 * np.sqrt(2.0/3), 0], # A ("sommet")
+#    [-0.5, -0.25 * np.sqrt(2.0/3), np.sqrt(3) / 6], # B (avant gauche)
+#    [0.5, -0.25 * np.sqrt(2.0/3), np.sqrt(3) / 6], # C (avant droit)
+#    [0, -0.25 * np.sqrt(2.0/3), -np.sqrt(3) / 3], # D (fond)
+#    [0, 0, 0] # Centre de gravité
+#]
+#sommets_octaedre = [
+#    [0, np.sqrt(2)/2, 0], # Le "sommet du haut"
+#    [0.5, 0, 0.5], # Avant droit
+#    [0.5, 0, -0.5], # Arrière droit
+#    [-0.5, 0, -0.5], # Arrière gauche
+#    [-0.5, 0, 0.5], # Avant gauche
+#    [0, -np.sqrt(2)/2, 0], # Le "sommet du bas"
+#    [0, 0, 0] # Centre de gravité
+#]
+        haut=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='up',sens=-1)
+        gauche=Operation(name='gauche',vecteur=sommets_tetraedre[1],ligne='middle',sens=-1)
+        droite=Operation(name='droite',vecteur=sommets_tetraedre[2],ligne='down',sens=-1)
         fond=Operation(name='fond',vecteur=sommets_tetraedre[3],ligne='down',sens=-1)
-#        gauche=Operation(name='gauche',vecteur=sommets_tetraedre[1],ligne='middle',sens=-1)
-#        droite=Operation(name='droite',vecteur=sommets_tetraedre[2],ligne='down',sens=-1)
 
 #        gestion.add_key("e",self.add_to_queue,haut)
         gestion.add_key("s",self.add_to_queue,fond)
