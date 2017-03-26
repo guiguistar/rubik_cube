@@ -110,8 +110,12 @@ if __name__=='__main__':
     # correspond à la varible u dans transformer_rubik
     pas_rotation_operation = 0.2
 
+    # classe gestion clavier global qq soit le polyedre
+    gestion_clavier=Gestion_clavier()
+
     # instanciation du Rubik_cube
     rubik_cube = Rubik_cube(ratio=display[0]/display[1])
+    rubik_cube.gerer_affichage_cube(gestion_clavier)
     
     # pyOpenGl
     gluPerspective(45, rubik_cube.ratio, 0.1, 50.0)
@@ -132,15 +136,15 @@ if __name__=='__main__':
     while True:
 
         # Gestion des événements clavier
-        for event in pygame.event.get(): rubik_cube.gestion_clavier(event)
+        for event in pygame.event.get(): gestion_clavier.check_event_key(event) 
         
         # Mouvements de la caméra
-        if rubik_cube.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
-        if rubik_cube.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
-        if rubik_cube.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
-        if rubik_cube.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
-        if rubik_cube.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
-        if rubik_cube.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
+        if gestion_clavier.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
+        if gestion_clavier.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
+        if gestion_clavier.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
+        if gestion_clavier.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
+        if gestion_clavier.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
+        if gestion_clavier.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
 
         # ======================================
         # Gestion des animations des opérations

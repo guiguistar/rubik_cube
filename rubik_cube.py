@@ -179,7 +179,6 @@ if __name__=='__main__':
     while True:
 
         # Gestion des événements clavier
-        #for event in pygame.event.get(): rubik_cube.gestion_clavier(event)
         for event in pygame.event.get(): gestion_clavier.check_event_key(event)
         
         # Mouvements de la caméra
