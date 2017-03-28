@@ -202,7 +202,7 @@ if __name__=='__main__':
                 operation_courante = rubik_cube.operations_queue.pop(0)
                 taux_transition_operation += pas_rotation_operation
         # >= (1 + pas_rotation_camera) en réalité, mais on gagne un calcul
-        elif taux_transition_operation > 1.05:
+        elif taux_transition_operation >= 1.+pas_rotation_operation:
             # Plus besoin de tourner, la transformation est finie
             taux_transition_operation = 0 
         else:

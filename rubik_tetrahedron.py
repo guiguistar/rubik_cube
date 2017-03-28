@@ -43,7 +43,6 @@ class Rubik_tetrahedron:
             #  -faire en sorte que les instructions tiennent sur une seule ligne
 
         for i, arete in enumerate(aretes_tetraedre):
-#            print "i,arete tetra",i,arete
             self.tetraedres.append(Polyedre(sommets_tetraedre, 
                                             aretes_tetraedre, 
                                             faces_tetraedre, 
@@ -51,8 +50,7 @@ class Rubik_tetrahedron:
                                             [(s1+s2)*self.coeff_translation for s1,s2 in zip(sommets_tetraedre[arete[0]], sommets_tetraedre[arete[1]])]))
 
         for i,sommet in enumerate(sommets_tetraedre):
-#            print "i,sommet tetra",i,sommet
-            # xfmvx pas le centre de gravité
+            # fmv pas le centre de gravité
             if i != 4 :
                 self.tetraedres.append(Polyedre(sommets_tetraedre, 
                                                 aretes_tetraedre, 
@@ -64,14 +62,15 @@ class Rubik_tetrahedron:
         # Envisager une boucle
         self.octaedres = []
         for i, sommet in enumerate(sommets_tetraedre):
-#            print "i,sommet octa",i,sommet
-            self.octaedres.append ( Polyedre(sommets_octaedre, 
-                                             aretes_octaedre, 
-                                             faces_octaedre, 
-                                             couleurs_faces_octaedre[i],
-                                             sommet,
-                                             -np.arccos(np.sqrt(3.)/3.), 
-                                             [1.,0.,0.]) )
+            # fmv pas le centre de gravité
+            if i != 4 :
+                self.octaedres.append ( Polyedre(sommets_octaedre, 
+                                                 aretes_octaedre,   
+                                                 faces_octaedre, 
+                                                 couleurs_faces_octaedre[i],
+                                                 sommet,
+                                                 -np.arccos(np.sqrt(3.)/3.), 
+                                                 [1.,0.,0.]) )
         for i, octa in enumerate(self.octaedres):
             octa.translation_polyedre([(self.coeff_translation-1.) * s for s in self.tetraedre_reference.sommets_initiaux[i]]) 
     # =============================================================================
@@ -221,7 +220,7 @@ if __name__=='__main__':
 
     # pygame
     pygame.init()
-    display = (600,600)
+    display = (1200,600)
     infopygame = pygame.display.Info()
 
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
@@ -277,7 +276,7 @@ if __name__=='__main__':
                 operation_courante = rubik_tetrahedron.operations_queue.pop(0)
                 taux_transition_operation += pas_rotation_operation
         # >= (1 + pas_rotation_camera) en réalité, mais on gagne un calcul
-        elif taux_transition_operation > 1.05:
+        elif taux_transition_operation >= 1.+pas_rotation_operation:
             # Plus besoin de tourner, la transformation est finie
             taux_transition_operation = 0 
         else:
