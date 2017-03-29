@@ -15,7 +15,7 @@ from OpenGL.GLU import *
 from op_transformations import Operation
 from polyedre import Polyedre
 from pygame_gestion_clavier import Gestion_clavier
-from rubik import couleurs_rubik,sommets_tetraedre,aretes_tetraedre,faces_tetraedre,couleurs_aretes_tetraedre,sommets_octaedre,faces_octaedre,couleurs_faces_aretes_tetraedre,couleurs_faces_octaedre,couleurs_faces_coins_tetraedre,aretes_octaedre
+from rubik_constants import couleurs_rubik,sommets_tetraedre,aretes_tetraedre,faces_tetraedre,couleurs_aretes_tetraedre,sommets_octaedre,faces_octaedre,couleurs_faces_aretes_tetraedre,couleurs_faces_octaedre,couleurs_faces_coins_tetraedre,aretes_octaedre
 
 # =============================================================================
 class Rubik_tetrahedron:

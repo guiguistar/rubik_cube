@@ -15,7 +15,7 @@ from OpenGL.GLU import *
 from op_transformations import Operation
 from polyedre import Polyedre
 from pygame_gestion_clavier import Gestion_clavier
-from rubik import aretes_cube, sommets_cube, faces_cube, couleurs_faces_aretes_cube, couleurs_faces_coins_cube, couleurs_faces_faces_cube
+from rubik_constants import aretes_cube, sommets_cube, faces_cube, couleurs_faces_aretes_cube, couleurs_faces_coins_cube, couleurs_faces_faces_cube
 
 # =============================================================================
 class Rubik_cube:

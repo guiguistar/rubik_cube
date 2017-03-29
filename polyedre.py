@@ -15,7 +15,7 @@ from OpenGL.GLU import *
 from pygame_gestion_clavier import Gestion_clavier
 from op_transformations import rotation,translation
 
-from rubik import couleurs_rubik
+from rubik_constants import couleurs_rubik
 
 # =============================================================================
 class Polyedre:
