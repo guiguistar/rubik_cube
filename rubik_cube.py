@@ -161,7 +161,6 @@ if __name__=='__main__':
     # correspond à la varible u dans transformer_rubik
     pas_rotation_operation = 0.2
 
-
     # classe gestion clavier global qq soit le polyedre
     gestion_clavier=Gestion_clavier()
 
