@@ -220,7 +220,7 @@ if __name__=='__main__':
 
     # pygame
     pygame.init()
-    display = (1200,600)
+    display = (600,600)
     infopygame = pygame.display.Info()
 
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
@@ -228,7 +228,7 @@ if __name__=='__main__':
     
     # fmv : en fait cette valeur est bien trop basse à 1
     # vitesse de rotation de la caméra
-    pas_rotation_camera = 10 # ~vitesse de rotation de la caméra
+    pas_rotation_camera = 10 
     # Pour tester quand une opération est complète; voir ci-après
     taux_transition_operation = 0 
     # pas de rotation pour les operations 10% 
@@ -255,7 +255,6 @@ if __name__=='__main__':
     while True:
 
         # Gestion des événements clavier
-        #for event in pygame.event.get(): rubik_cube.gestion_clavier(event)
         for event in pygame.event.get(): gestion_clavier.check_event_key(event)
         
         # Mouvements de la caméra

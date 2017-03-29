@@ -113,9 +113,6 @@ class Rubik_cube:
         glTranslatef(0.0,0.0, -30) 
 
     # =============================================================================
-    # fmv : À mon avis, les variables globales peuvent etre exprimées dans la classe rubik_cube ...
-    # fmv : l'affichage du rubik_cube est alors une methode de la classe
-    # fmv : ou alors construire une parenté entre deux classes ( affichage et rubik ) 
     def gerer_affichage_cube(self,gestion):
         
         # on définit les operations sur le rubik accessible par le clavier
@@ -155,10 +152,10 @@ if __name__=='__main__':
     
     # fmv : en fait cette valeur est bien trop basse à 1
     # vitesse de rotation de la caméra
-    pas_rotation_camera = 10 # ~vitesse de rotation de la caméra
+    pas_rotation_camera = 10 
     # Pour tester quand une opération est complète; voir ci-après
     taux_transition_operation = 0 
-    # pas de rotation pour les operations 10% 
+    # pas de rotation pour les operations/transformation 
     # fmv : 20% c'est pas mal chez moi
     # correspond à la varible u dans transformer_rubik
     pas_rotation_operation = 0.2
