@@ -71,9 +71,9 @@ class Rubik_cube:
     # =============================================================================
     # Tourner le rubik revient à tourner chacun de ses cubes
     # fmv : n'est pas/plus utilisé
-    def rotation_rubik(self, angle, vecteur):
-        for cube in self.cubes:
-            cube.rotation_polyedre(angle, vecteur)
+    #def rotation_rubik(self, angle, vecteur):
+    #    for cube in self.cubes:
+    #        cube.rotation_polyedre(angle, vecteur)
    
     # =============================================================================
     # op : Objet de la classe Operation :
@@ -126,6 +126,7 @@ class Rubik_cube:
         avant=Operation(name='avant',vecteur=[0,0,1],ligne='down',sens=-1)
         aam=Operation(name='aam',vecteur=[0,0,1],ligne='middle',sens=-1)
 
+        #définition des touches clavier pour les opérations/transformations du cube
         gestion.add_key("e",self.add_to_queue,haut)
         gestion.add_key("s",self.add_to_queue,hbm)
         gestion.add_key("y",self.add_to_queue,bas)

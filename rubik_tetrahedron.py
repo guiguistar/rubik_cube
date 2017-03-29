@@ -35,13 +35,9 @@ class Rubik_tetrahedron:
         # Construction d'un tétraèdre de référence qui servira à tracer les axes de la pyramide
         self.tetraedre_reference = Polyedre(sommets_tetraedre, aretes_tetraedre,faces_tetraedre, couleurs_rubik)
 
+        # Tétraèdres des centres des arêtes (translations du tétraèdre de référence par chacun des
+        # vecteurs demi-somme de couples d'extrémités; envisager une boucle
         self.tetraedres = []
-            # Tétraèdres des centres des arêtes (translations du tétraèdre de référence par chacun des
-            # vecteurs demi-somme de couples d'extrémités; envisager une boucle
-            # A faire:
-            #  -modifier (mettre en blanc) les couleurs des faces invisibles de certains tétraèdre
-            #  -faire en sorte que les instructions tiennent sur une seule ligne
-
         for i, arete in enumerate(aretes_tetraedre):
             self.tetraedres.append(Polyedre(sommets_tetraedre, 
                                             aretes_tetraedre, 
@@ -59,7 +55,6 @@ class Rubik_tetrahedron:
                                                 [2*s*self.coeff_translation for s in sommet]))
 
         # Constructions des 4 octaèdres (translations de l'octaèdre de référence par chacun des vecteurs sommet du tétraèdre de référence)
-        # Envisager une boucle
         self.octaedres = []
         for i, sommet in enumerate(sommets_tetraedre):
             # fmv pas le centre de gravité
@@ -71,8 +66,11 @@ class Rubik_tetrahedron:
                                                  sommet,
                                                  -np.arccos(np.sqrt(3.)/3.), 
                                                  [1.,0.,0.]) )
+        # translation des octaèdres
+        # fmv : c'est quoi le calcul ici ?
         for i, octa in enumerate(self.octaedres):
             octa.translation_polyedre([(self.coeff_translation-1.) * s for s in self.tetraedre_reference.sommets_initiaux[i]]) 
+
     # =============================================================================
     # Afficher le rubik revient à afficher chacun de ses polyedres 
     def afficher(self):
@@ -85,73 +83,12 @@ class Rubik_tetrahedron:
     # =============================================================================
     # Tourner le rubik revient à tourner chacun de ses polyedres
     # fmv : n'est pas/plus utilisé
-    def rotation_rubik(self, angle, vecteur):
-        for octaedre in self.octaedres:
-            octaedre.rotation_polyedre(angle, vecteur)
-        for tetraedre in self.tetraedres:
-            tetraedre.rotation_polyedre(angle, vecteur)
+    #def rotation_rubik(self, angle, vecteur):
+    #    for octaedre in self.octaedres:
+    #        octaedre.rotation_polyedre(angle, vecteur)
+    #    for tetraedre in self.tetraedres:
+    #        tetraedre.rotation_polyedre(angle, vecteur)
    
-
-    # Pour les méthodes qui suivent et qui permettent de manipuler la pyramide,
-    # on teste à chaque fois chacun des 14 polyèdres pour savoir s'ils sont
-    # concernés par le mouvement effectué
-
-    # Revoir les tests sur les produits scalaires (cf tranlations pour séparer les pièces
-    # font éhouer les dits tests
-    
-    # Faire tourner les 2 couches du haut
-    def Haut(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if tetraedre.sommets[4][1] > 0: # Test sur l'ordonnée du centre de gravité
-                tetraedre.haut(u)
-        for octaedre in self.octaedres:
-            if octaedre.sommets[6][1] > 0: # Idem
-                octaedre.haut(u)
-    # Faire tourner le petit tétraèdre du haut
-    def haut(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if tetraedre.sommets[4][1] > 0 + np.sqrt(2.0/3):
-                tetraedre.haut(u)
-    # Faire tourner les 2 couches de gauche
-    def Gauche(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[1])) > 0: # Test sur le produit scalaire entre OG' et OG
-                tetraedre.gauche(u)
-        for octaedre in self.octaedres:
-            if sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[1])) > 0: # Idem 
-                octaedre.gauche(u)
-    # Faire tourner le petit tétraèdre de gauche
-    def gauche(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if tetraedre.sommets[4][0] < -0.7:
-                tetraedre.gauche(u)
-    # Faire tourner les 2 couches de droite
-    def Droite(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[2])) > 0: # Test sur le produit scalaire entre OG' et OG
-                tetraedre.droite(u)
-        for octaedre in self.octaedres:
-            if sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[2])) > 0: # Idem 
-                octaedre.droite(u)
-    # Faire tourner le petit tétraèdre de droite
-    def droite(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if tetraedre.sommets[4][0] > 0.7:
-                tetraedre.droite(u)
-    # Faire tourner les 2 couches du fond
-    def Fond(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[3])) > 0: # Test sur le produit scalaire entre OG' et OG
-                tetraedre.fond(u)
-        for octaedre in self.octaedres:
-            if sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[3])) > 0: # Idem 
-                octaedre.fond(u)
-    # Faire tourner le petit tétraèdre du fond
-    def fond(self, u = 1):
-        for tetraedre in self.tetraedres:
-            if tetraedre.sommets[4][2] < -0.7:
-                tetraedre.fond(u)
-
     # =============================================================================
     # op : Objet de la classe Operation :
     #   op.vecteur : vecteur rotation
@@ -159,9 +96,50 @@ class Rubik_tetrahedron:
     #   op.sens    : +1,-1 sens de la rotation 
     def transformer_rubik(self, op, u=1) :
 
-        for tetraedre in self.tetraedres:
-            if tetraedre.sommets[4][2] < -0.7:
-                tetraedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
+        if op.vecteur[0] == 0. and op.vecteur[1] == (0.75*np.sqrt(2./3.)) :
+            k=0
+        if op.vecteur[0] == -0.5 and op.vecteur[1] == -0.25*np.sqrt(2./3) :
+            k=1
+        if op.vecteur[0] == 0.5 and op.vecteur[1] == -0.25*np.sqrt(2./3) :
+            k=2
+        if op.vecteur[0] == 0. and op.vecteur[1] == -0.25* np.sqrt(2./3.):
+            k=3
+
+        if op.ligne == "up" :
+            for tetraedre in self.tetraedres:
+                # Test sur le produit scalaire entre OG' et OG
+                test_tetra=sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[k]))
+                if test_tetra > np.sqrt(2./3.) : 
+                    tetraedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
+            for octaedre in self.octaedres:
+                # Test sur le produit scalaire entre OG' et OG
+                test_octa=sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[k]))
+                if test_octa > np.sqrt(2./3.) : 
+                    octaedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
+
+        if op.ligne == "middle" :
+            for tetraedre in self.tetraedres:
+                # Test sur le produit scalaire entre OG' et OG
+                test_tetra=sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[k]))
+                if test_tetra < np.sqrt(2./3.) and test_tetra > 0. : 
+                    tetraedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
+            for octaedre in self.octaedres:
+                # Test sur le produit scalaire entre OG' et OG
+                test_octa=sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[k]))
+                if test_octa < np.sqrt(2./3.) and test_octa > 0. : 
+                    octaedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
+
+        if op.ligne == "down" :
+            for tetraedre in self.tetraedres:
+                # Test sur le produit scalaire entre OG' et OG
+                test_tetra=sum(np.multiply(tetraedre.sommets[4], sommets_tetraedre[k]))
+                if test_tetra < 0. : 
+                    tetraedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
+            for octaedre in self.octaedres:
+                # Test sur le produit scalaire entre OG' et OG
+                test_octa=sum(np.multiply(octaedre.sommets[6], sommets_tetraedre[k]))
+                if test_octa < 0 :  
+                    octaedre.rotation_polyedre(op.sens*u * 2 * np.pi / 3,op.vecteur)
 
 
     # =============================================================================
@@ -181,39 +159,34 @@ class Rubik_tetrahedron:
     def gerer_affichage_tetrahedron(self,gestion):
         
         # Les rotations s'effectuent par rapport aux axes du tétraèdre de référence
-    #    def haut(self, u = 1):   self.rotation(u * 2 * np.pi / 3, sommets_tetraedre[0])
-    #    def fond(self, u = 1):   self.rotation(u * 2 * np.pi / 3, sommets_tetraedre[3])
-    #    def gauche(self, u = 1): self.rotation(u * 2 * np.pi / 3, sommets_tetraedre[1])
-    #    def droite(self, u = 1): self.rotation(u * 2 * np.pi / 3, sommets_tetraedre[2])
-        # on définit les operations sur le rubik accessible par le clavier
-#sommets_tetraedre = [
-#    [0, 0.75 * np.sqrt(2.0/3), 0], # A ("sommet")
-#    [-0.5, -0.25 * np.sqrt(2.0/3), np.sqrt(3) / 6], # B (avant gauche)
-#    [0.5, -0.25 * np.sqrt(2.0/3), np.sqrt(3) / 6], # C (avant droit)
-#    [0, -0.25 * np.sqrt(2.0/3), -np.sqrt(3) / 3], # D (fond)
-#    [0, 0, 0] # Centre de gravité
-#]
-#sommets_octaedre = [
-#    [0, np.sqrt(2)/2, 0], # Le "sommet du haut"
-#    [0.5, 0, 0.5], # Avant droit
-#    [0.5, 0, -0.5], # Arrière droit
-#    [-0.5, 0, -0.5], # Arrière gauche
-#    [-0.5, 0, 0.5], # Avant gauche
-#    [0, -np.sqrt(2)/2, 0], # Le "sommet du bas"
-#    [0, 0, 0] # Centre de gravité
-#]
-        haut=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='up',sens=-1)
-        gauche=Operation(name='gauche',vecteur=sommets_tetraedre[1],ligne='middle',sens=-1)
-        droite=Operation(name='droite',vecteur=sommets_tetraedre[2],ligne='down',sens=-1)
-        fond=Operation(name='fond',vecteur=sommets_tetraedre[3],ligne='down',sens=-1)
+        hu=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='up',sens=-1)
+        hm=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='middle',sens=-1)
+        hd=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='down',sens=-1)
+        gu=Operation(name='gauche',vecteur=sommets_tetraedre[1],ligne='up',sens=-1)
+        gm=Operation(name='gauche',vecteur=sommets_tetraedre[1],ligne='middle',sens=-1)
+        gd=Operation(name='gauche',vecteur=sommets_tetraedre[1],ligne='down',sens=-1)
+        du=Operation(name='droite',vecteur=sommets_tetraedre[2],ligne='up',sens=-1)
+        dm=Operation(name='droite',vecteur=sommets_tetraedre[2],ligne='middle',sens=-1)
+        dd=Operation(name='droite',vecteur=sommets_tetraedre[2],ligne='down',sens=-1)
+        fu=Operation(name='fond',vecteur=sommets_tetraedre[3],ligne='up',sens=-1)
+        fm=Operation(name='fond',vecteur=sommets_tetraedre[3],ligne='middle',sens=-1)
+        fd=Operation(name='fond',vecteur=sommets_tetraedre[3],ligne='down',sens=-1)
 
-#        gestion.add_key("e",self.add_to_queue,haut)
-        gestion.add_key("s",self.add_to_queue,fond)
-#        gestion.add_key("y",self.add_to_queue,gauche)
-#        gestion.add_key("r",self.add_to_queue,droite)
+        # définitions des touches clavier pour les opérations/transformations du tetrèdre 
+        gestion.add_key("e",self.add_to_queue,hu)
+        gestion.add_key("s",self.add_to_queue,hm)
+        gestion.add_key("y",self.add_to_queue,hd)
+        gestion.add_key("r",self.add_to_queue,gu)
+        gestion.add_key("d",self.add_to_queue,gm)
+        gestion.add_key("x",self.add_to_queue,gd)
+        gestion.add_key("t",self.add_to_queue,du)
+        gestion.add_key("f",self.add_to_queue,dm)
+        gestion.add_key("c",self.add_to_queue,dd)
+        gestion.add_key("z",self.add_to_queue,fu)
+        gestion.add_key("g",self.add_to_queue,fm)
+        gestion.add_key("v",self.add_to_queue,fd)
         gestion.add_key("a",self.restore_axes,None)
         gestion.add_key("q",self.pygame_quit,None)
-
 
 
 if __name__=='__main__':

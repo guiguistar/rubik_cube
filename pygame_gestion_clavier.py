@@ -16,12 +16,15 @@ class Gestion_clavier():
     map_keys['d']=pygame.K_d
     map_keys['e']=pygame.K_e
     map_keys['f']=pygame.K_f
+    map_keys['g']=pygame.K_g
     map_keys['q']=pygame.K_q
     map_keys['r']=pygame.K_r
     map_keys['s']=pygame.K_s
     map_keys['t']=pygame.K_t
+    map_keys['v']=pygame.K_v
     map_keys['x']=pygame.K_x
     map_keys['y']=pygame.K_y
+    map_keys['z']=pygame.K_z
 
 
 
