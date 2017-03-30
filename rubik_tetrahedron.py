@@ -28,6 +28,7 @@ class Rubik_tetrahedron:
 
         self.ratio = ratio
         self.operations_queue=[]
+        self.rtype='tetrahedron'
 
         # Pour écarter un peu les différentes pièces, on les translate un peu plus
         self.coeff_translation = 1.1

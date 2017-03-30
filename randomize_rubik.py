@@ -41,7 +41,7 @@ def inverser(ops):
     return inverse
 
 # ===================================================    
-#  entrée : - rubik_cube : objet rubik 
+#  entrée : - rubik : objet rubik cube ou tetraedre
 #           - nop_random : nombre d'operations 
 #  sortie : liste des opérations appliqués
 #
@@ -49,16 +49,20 @@ def inverser(ops):
 #  la queue des operations de l'objet rubik_cube pour
 #  affichage
 # ===================================================    
-def randomize_cube(rubik_cube,nop_random=10):
+def randomize(rubik,nop_random):
 
-    #print 60*"="
-    #print "Mélange rubik_cube avec "+str(nop_random)+" operations"
-    #print 60*"="
-    #print 
+
+    if rubik.rtype=='cube':
+        vecteurs=[[1.,0.,0.],[0.,1.,0.],[0.,0.,1.]]
+    if rubik.rtype=='tetrahedron':
+        vecteurs=[ [ 0.  ,  0.75 * np.sqrt(2.0/3.), 0.               ], # A ("sommet")
+                   [-0.5 , -0.25 * np.sqrt(2.0/3.),  np.sqrt(3.) / 6.], # B (avant gauche)
+                   [ 0.5 , -0.25 * np.sqrt(2.0/3.),  np.sqrt(3.) / 6.], # C (avant droit)
+                   [ 0.  , -0.25 * np.sqrt(2.0/3.), -np.sqrt(3.) / 3.], ] # D (fond)
+
     # =========================================
     # génerer toutes les operations possibles ( que 18?) 
     # =========================================
-    vecteurs=[[1.,0.,0.],[0.,1.,0.],[0.,0.,1.]]
     lignes=['up','middle','down']
     rot=[1.,-1.]
     nameop=[]
@@ -81,8 +85,7 @@ def randomize_cube(rubik_cube,nop_random=10):
     iop=0
     while iop < nop_random :
         op=random.choice(operations_random)
-    #    print op
-        rubik_cube.operations_queue.append(op)
+        rubik.operations_queue.append(op)
         all_operations.append(op)
         iop+=1
 
@@ -92,6 +95,12 @@ def randomize_cube(rubik_cube,nop_random=10):
 
 if __name__=='__main__':
 
+    separator=60*"="
+    print separator
+    print "Bloc testant la fonction randomize"
+    print "affichage et \"randomisation\" d'un rubik's cube"
+    print "ici la fonction génère 30 transformations aléatoires du cube"
+    print separator
     # pygame
     pygame.init()
     display = (600,600)
@@ -114,7 +123,7 @@ if __name__=='__main__':
 
     # instanciation du Rubik_cube
     rubik_cube = Rubik_cube(ratio=display[0]/display[1])
-    rubik_cube.gerer_affichage_cube(gestion_clavier)
+    rubik_cube.gerer_affichage(gestion_clavier)
     
     # pyOpenGl
     gluPerspective(45, rubik_cube.ratio, 0.1, 50.0)
@@ -123,8 +132,7 @@ if __name__=='__main__':
     glEnable(GL_DEPTH_TEST) 
 
     #test(rubik_cube)
-
-    ops=randomize_cube(rubik_cube,100)
+    ops=randomize(rubik_cube,30)
     inversops=inverser(ops)
     for op in inversops:
     #    print "inverse",op

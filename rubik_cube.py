@@ -28,6 +28,7 @@ class Rubik_cube:
 
         self.ratio = ratio
         self.operations_queue=[]
+        self.rtype='cube'
 
         # Pour écarter un peu les différentes pièces, on les translate un peu plus
         self.coeff_translation = 1.1 
@@ -81,7 +82,6 @@ class Rubik_cube:
     #   op.ligne   : up/down
     #   op.sens    : +1,-1 sens de la rotation 
     def transformer_rubik(self, op, u=1) :
-       
         # on determine k : l'indice non nul du vecteur de rotation
         for i,e in enumerate(op.vecteur) :
             if e != 0 : 
@@ -143,6 +143,28 @@ class Rubik_cube:
 
 if __name__=='__main__':
 
+    separator=60*"="
+    print separator
+    print "Bloc testant la classe Rubik's cube"
+    print "affichage et gestion du clavier "
+    print separator
+    print "                                "
+    print "              Y                 "
+    print "                                "
+    print "              |                 "
+    print "              |                 "
+    print "              |----- X          "
+    print "             /                  "
+    print "            /                   "
+    print "           Z                    "
+    print "                                "
+    print " touches : "
+    print " [esy]   : rotation autour de Y "
+    print " [rdx]   : rotation autour de X "
+    print " [tfc]   : rotation autour de Z "
+    print " [q]     : quitter"
+    print 
+    print separator
     # pygame
     pygame.init()
     display = (600,600)

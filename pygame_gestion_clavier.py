@@ -69,10 +69,8 @@ class Gestion_clavier():
 #        print self.keys[-1]
 
 def fonction_e(args):
-    print len(args)
     print "in fonction_e"
 def fonction_f(args):
-    print len(args)
     print "in fonction_f"
 def fonction_quit(args):
     pygame.quit()
@@ -80,6 +78,15 @@ def fonction_quit(args):
 
 if __name__=="__main__":
 
+    separator=60*"="
+    print separator
+    print "Bloc de test de la classe Gestion_clavier"
+    print "trois touches :"
+    print "              e : appel fonction_e"
+    print "              f : appel fonction_f"
+    print "              q : quitter pygame  "
+    print separator
+    print 
     # pygame
     pygame.init()
     display = (600,600)

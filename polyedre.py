@@ -92,6 +92,11 @@ class Polyedre:
 
 if __name__=='__main__':
 
+    separator=60*"="
+    print separator
+    print "Bloc testant la classe Polyèdre:"
+    print "affichage d'un simple cube blanc avec ses aretes"
+    print separator
     # pygame
     pygame.init()
     display = (600,600)

@@ -14,17 +14,23 @@ from OpenGL.GLU import *
 
 from rubik_cube import Rubik_cube
 from rubik_tetrahedron import Rubik_tetrahedron
+from randomize_rubik import randomize
 from pygame_gestion_clavier import Gestion_clavier
 
 def main_parser():
 
     parser = argparse.ArgumentParser(description='')
-
-    parser.add_argument('-c','--cube' ,help='Rubik\'s Cube'       ,dest="cube",action='store_true')
-    parser.add_argument('-t','--tetra',help='Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
-
+    parser.set_defaults(random=10)
     parser.set_defaults(cube=False)
     parser.set_defaults(tetrahedron=False)
+
+    parser.add_argument('-c','--cube'  ,help='Afficher Rubik\'s Cube'       ,dest="cube"       ,action='store_true')
+    parser.add_argument('-t','--tetra' ,help='Afficher Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
+    parser.add_argument('-r','--random',help='random rubik'                 ,dest="random"     ,default=10)
+
+    if len(sys.argv)==1:
+        parser.print_help()
+        sys.exit(1)
     args = parser.parse_args()
 
     return args
@@ -42,9 +48,12 @@ if __name__=='__main__':
     print separator
     print "Running rubik ..."
 
+
     args = main_parser()
     cube=args.cube
     tetrahedron=args.tetrahedron
+    random_rubik=int(args.random)
+
 
     # pygame
     pygame.init()
@@ -75,6 +84,7 @@ if __name__=='__main__':
         gluPerspective(45, rubik.ratio, 0.1, 50.0)
         glTranslatef(0.0,0.0,-30) 
         glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
+
     if tetrahedron :
         # instanciation du Rubik_tetrahedron
         rubik = Rubik_tetrahedron(ratio=display[0]/display[1])
@@ -84,6 +94,8 @@ if __name__=='__main__':
         glTranslatef(0.0,0.0,-8) 
         glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
+    if random_rubik > 0:
+        ops=randomize(rubik,random_rubik)
 
     # ===================
     #   main event loop
