@@ -14,33 +14,31 @@
  ## affichage et gestion du clavier:
 
  ### transformation : 
- #### -[esy]   : rotation autour de Y 
- #### -[rdx]   : rotation autour de X 
- #### -[tfc]   : rotation autour de Z 
+  - [esy]   : rotation autour de Y 
+  - [rdx]   : rotation autour de X 
+  - [tfc]   : rotation autour de Z 
 
  ### mouvement caméra fleche/[pm]:
- #### -[a]     : position d'origine de la caméra
+  - [a]     : position d'origine de la caméra
 
- #### -[q]     : quitter
+  - [q]     : quitter
 
 
 
 
 #                     RUBIK'S TETRAHEDRON      
                                 
- affichage et gestion du clavier:
+ ## affichage et gestion du clavier:
 
- touches : 
+ ### transformation : 
+ - [esy]   : rotation autour de GA
+ - [rdx]   : rotation autour de GB
+ - [tfc]   : rotation autour de GC
+ - [zgv]   : rotation autour de GD
 
- transformation : 
- -[esy]   : rotation autour de GA
- -[rdx]   : rotation autour de GB
- -[tfc]   : rotation autour de GC
- -[zgv]   : rotation autour de GD
+ ### mouvement caméra fleche/[pm]:
+ - [a]     : position d'origine de la caméra
 
- mouvement caméra fleche/[pm]:
- -[a]     : position d'origine de la caméra
-
- -[q]     : quitter
+ - [q]     : quitter
 
 
