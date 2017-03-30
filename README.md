@@ -12,18 +12,17 @@ optional arguments:
 
 #                     RUBIK'S CUBE           
                                 
- affichage et gestion du clavier:
- touches : 
+ ##affichage et gestion du clavier:
 
- transformation : 
- [esy]   : rotation autour de Y 
- [rdx]   : rotation autour de X 
- [tfc]   : rotation autour de Z 
+ ###transformation : 
+ ####-[esy]   : rotation autour de Y 
+ ####-[rdx]   : rotation autour de X 
+ ####-[tfc]   : rotation autour de Z 
 
- mouvement caméra fleche/[pm]:
- [a]     : position d'origine de la caméra
+ ###mouvement caméra fleche/[pm]:
+ ####-[a]     : position d'origine de la caméra
 
- [q]     : quitter
+ ####-[q]     : quitter
 
 
 
