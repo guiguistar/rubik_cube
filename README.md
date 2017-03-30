@@ -1,13 +1,12 @@
 # rubik_cube
 
-usage: rubik [-h] [-c] [-t] [-r RANDOM]
+## usage: rubik [-h] [-c] [-t] [-r RANDOM]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -c, --cube            Afficher Rubik's Cube
-  -t, --tetra           Afficher Rubik's Tetrahedron
-  -r RANDOM, --rand RANDOM
-                        RANDOM est le nombre de transformations donné
+## optional arguments:
+  - -h, --help                show this help message and exit
+  - -c, --cube                afficher Rubik's Cube
+  - -t, --tetra               afficher Rubik's Tetrahedron
+  - -r RANDOM, --rand RANDOM  RANDOM est le nombre de transformations donné
 
 
 #                     RUBIK'S CUBE           
