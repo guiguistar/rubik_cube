@@ -20,13 +20,13 @@ from pygame_gestion_clavier import Gestion_clavier
 def main_parser():
 
     parser = argparse.ArgumentParser(description='')
-    parser.set_defaults(random=10)
+    parser.set_defaults(random=0)
     parser.set_defaults(cube=False)
     parser.set_defaults(tetrahedron=False)
 
     parser.add_argument('-c','--cube'  ,help='afficher Rubik\'s Cube'       ,dest="cube"       ,action='store_true')
     parser.add_argument('-t','--tetra' ,help='afficher Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
-    parser.add_argument('-r','--rand'  ,help='RANDOM est le nombre de transformations donné'   ,dest="random",default=10)
+    parser.add_argument('-r','--rand'  ,help='RANDOM est le nombre de transformations donné'   ,dest="random")
 
     if len(sys.argv)==1:
         parser.print_help()
@@ -46,7 +46,6 @@ if __name__=='__main__':
     print "auteurs : Guillaume Roux / Filipe Vasconcelos "
     print "ESME Sudria Lille "
     print separator
-    print "Running rubik ..."
 
 
     args = main_parser()
@@ -77,6 +76,25 @@ if __name__=='__main__':
     gestion_clavier=Gestion_clavier()
 
     if cube :
+        print "" 
+        print separator 
+        print "                     RUBIK'S CUBE           "
+        print separator
+        print "                                "
+        print " affichage et gestion du clavier:"
+        print " touches : "
+        print 
+        print " transformation : "
+        print " [esy]   : rotation autour de Y "
+        print " [rdx]   : rotation autour de X "
+        print " [tfc]   : rotation autour de Z "
+        print 
+        print " mouvement caméra fleche/[pm]:"
+        print " [a]     : position d'origine de la caméra"
+        print 
+        print " [q]     : quitter"
+        print 
+        print separator
         # instanciation du Rubik_cube
         rubik = Rubik_cube(ratio=display[0]/display[1])
         rubik.gerer_affichage(gestion_clavier)
@@ -86,6 +104,26 @@ if __name__=='__main__':
         glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
     if tetrahedron :
+        print "" 
+        print separator 
+        print "                     RUBIK'S TETRAHEDRON      "
+        print separator
+        print "                                "
+        print " affichage et gestion du clavier:"
+        print " touches : "
+        print 
+        print " transformation : "
+        print " [esy]   : rotation autour de GA"
+        print " [rdx]   : rotation autour de GB"
+        print " [tfc]   : rotation autour de GC"
+        print " [zgv]   : rotation autour de GD"
+        print 
+        print " mouvement caméra fleche/[pm]:"
+        print " [a]     : position d'origine de la caméra"
+        print ""
+        print " [q]     : quitter"
+        print 
+        print separator
         # instanciation du Rubik_tetrahedron
         rubik = Rubik_tetrahedron(ratio=display[0]/display[1])
         rubik.gerer_affichage(gestion_clavier)
@@ -94,12 +132,14 @@ if __name__=='__main__':
         glTranslatef(0.0,0.0,-8) 
         glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
+    # randomize
     if random_rubik > 0:
         ops=randomize(rubik,random_rubik)
 
     # ===================
     #   main event loop
     # ===================
+    print "Running rubik ..."
     while True:
 
         # Gestion des événements clavier
