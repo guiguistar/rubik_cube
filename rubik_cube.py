@@ -113,7 +113,7 @@ class Rubik_cube:
         glTranslatef(0.0,0.0, -30) 
 
     # =============================================================================
-    def gerer_affichage_cube(self,gestion):
+    def gerer_affichage(self,gestion):
         
         # on définit les operations sur le rubik accessible par le clavier
         haut=Operation(name='haut',vecteur=[0,1,0],ligne='up',sens=-1)
@@ -153,7 +153,7 @@ if __name__=='__main__':
     
     # fmv : en fait cette valeur est bien trop basse à 1
     # vitesse de rotation de la caméra
-    pas_rotation_camera = 10 
+    pas_rotation_camera = 15 
     # Pour tester quand une opération est complète; voir ci-après
     taux_transition_operation = 0 
     # pas de rotation pour les operations/transformation 
@@ -166,7 +166,7 @@ if __name__=='__main__':
 
     # instanciation du Rubik_cube
     rubik_cube = Rubik_cube(ratio=display[0]/display[1])
-    rubik_cube.gerer_affichage_cube(gestion_clavier)
+    rubik_cube.gerer_affichage(gestion_clavier)
     # pyOpenGl
     gluPerspective(45, rubik_cube.ratio, 0.1, 50.0)
     glTranslatef(0.0,0.0, -30) 

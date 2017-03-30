@@ -156,7 +156,7 @@ class Rubik_tetrahedron:
         glTranslatef(0.0,0.0, -8) 
 
     # =============================================================================
-    def gerer_affichage_tetrahedron(self,gestion):
+    def gerer_affichage(self,gestion):
         
         # Les rotations s'effectuent par rapport aux axes du tétraèdre de référence
         hu=Operation(name='haut',vecteur= sommets_tetraedre[0],ligne='up',sens=-1)
@@ -215,7 +215,7 @@ if __name__=='__main__':
 
     # instanciation du Rubik_cube
     rubik_tetrahedron = Rubik_tetrahedron(ratio=display[0]/display[1])
-    rubik_tetrahedron.gerer_affichage_tetrahedron(gestion_clavier)
+    rubik_tetrahedron.gerer_affichage(gestion_clavier)
     # pyOpenGl
     gluPerspective(45, rubik_tetrahedron.ratio, 0.1, 50.0)
     glTranslatef(0.0,0.0, -8) 

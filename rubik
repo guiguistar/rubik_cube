@@ -1,0 +1,128 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import sys
+import os
+
+import datetime
+import argparse
+
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
+from rubik_cube import Rubik_cube
+from rubik_tetrahedron import Rubik_tetrahedron
+from pygame_gestion_clavier import Gestion_clavier
+
+def main_parser():
+
+    parser = argparse.ArgumentParser(description='')
+
+    parser.add_argument('-c','--cube' ,help='Rubik\'s Cube'       ,dest="cube",action='store_true')
+    parser.add_argument('-t','--tetra',help='Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
+
+    parser.set_defaults(cube=False)
+    parser.set_defaults(tetrahedron=False)
+    args = parser.parse_args()
+
+    return args
+
+
+if __name__=='__main__':
+
+    separator=60*"="
+    now = datetime.datetime.now()
+
+    print separator
+    print now.strftime("%Y-%m-%d %H:%M")
+    print "auteurs : Guillaume Roux / Filipe Vasconcelos "
+    print "ESME Sudria Lille "
+    print separator
+    print "Running rubik ..."
+
+    args = main_parser()
+    cube=args.cube
+    tetrahedron=args.tetrahedron
+
+    # pygame
+    pygame.init()
+    display = (600,600)
+    infopygame = pygame.display.Info()
+
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
+    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    
+    # fmv : en fait cette valeur est bien trop basse à 1
+    # vitesse de rotation de la caméra
+    pas_rotation_camera = 10 
+    # Pour tester quand une opération est complète; voir ci-après
+    taux_transition_operation = 0 
+    # pas de rotation pour les operations/transformation 
+    # fmv : 20% c'est pas mal chez moi
+    # correspond à la varible u dans transformer_rubik
+    pas_rotation_operation = 0.2
+
+    # classe gestion clavier global qq soit le polyedre
+    gestion_clavier=Gestion_clavier()
+
+    if cube :
+        # instanciation du Rubik_cube
+        rubik = Rubik_cube(ratio=display[0]/display[1])
+        rubik.gerer_affichage(gestion_clavier)
+        # pyOpenGl
+        gluPerspective(45, rubik.ratio, 0.1, 50.0)
+        glTranslatef(0.0,0.0,-30) 
+        glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
+    if tetrahedron :
+        # instanciation du Rubik_tetrahedron
+        rubik = Rubik_tetrahedron(ratio=display[0]/display[1])
+        rubik.gerer_affichage(gestion_clavier)
+        # pyOpenGl
+        gluPerspective(45, rubik.ratio, 0.1, 50.0)
+        glTranslatef(0.0,0.0,-8) 
+        glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
+
+
+    # ===================
+    #   main event loop
+    # ===================
+    while True:
+
+        # Gestion des événements clavier
+        for event in pygame.event.get(): gestion_clavier.check_event_key(event)
+        
+        # Mouvements de la caméra
+        if gestion_clavier.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
+        if gestion_clavier.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
+        if gestion_clavier.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
+        if gestion_clavier.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
+        if gestion_clavier.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
+        if gestion_clavier.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
+       
+
+        # ======================================
+        # Gestion des animations des opérations
+        # ======================================
+        if taux_transition_operation == 0:
+            # Si une opération est dans la queue
+            if(len(rubik.operations_queue) > 0): 
+                operation_courante = rubik.operations_queue.pop(0)
+                taux_transition_operation += pas_rotation_operation
+        # >= (1 + pas_rotation_camera) en réalité, mais on gagne un calcul
+        elif taux_transition_operation >= 1.+pas_rotation_operation:
+            # Plus besoin de tourner, la transformation est finie
+            taux_transition_operation = 0 
+        else:
+            rubik.transformer_rubik(op=operation_courante,u=pas_rotation_operation)
+            taux_transition_operation += pas_rotation_operation
+
+        # Mise à jour de l'affichage
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+
+        rubik.afficher()
+        pygame.display.flip()
+
+        #pygame.time.wait(10) # Enlevable
+
