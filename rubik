@@ -24,9 +24,9 @@ def main_parser():
     parser.set_defaults(cube=False)
     parser.set_defaults(tetrahedron=False)
 
-    parser.add_argument('-c','--cube'  ,help='Afficher Rubik\'s Cube'       ,dest="cube"       ,action='store_true')
-    parser.add_argument('-t','--tetra' ,help='Afficher Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
-    parser.add_argument('-r','--random',help='random rubik'                 ,dest="random"     ,default=10)
+    parser.add_argument('-c','--cube'  ,help='afficher Rubik\'s Cube'       ,dest="cube"       ,action='store_true')
+    parser.add_argument('-t','--tetra' ,help='afficher Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
+    parser.add_argument('-r','--rand'  ,help='RANDOM est le nombre de transformations donné'   ,dest="random",default=10)
 
     if len(sys.argv)==1:
         parser.print_help()
