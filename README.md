@@ -1,8 +1,8 @@
-# rubik_cube
+# rubik
 
-## usage: rubik [-h] [-c] [-t] [-r RANDOM]
+ usage: rubik [-h] [-c] [-t] [-r RANDOM]
 
-## optional arguments:
+ optional arguments:
   - -h, --help                show this help message and exit
   - -c, --cube                afficher Rubik's Cube
   - -t, --tetra               afficher Rubik's Tetrahedron
