@@ -6,7 +6,8 @@
   - -h, --help                show this help message and exit
   - -c, --cube                afficher Rubik's Cube
   - -t, --tetra               afficher Rubik's Tetrahedron
-  -     --rand RANDOM         RANDOM est le nombre de transformations donné
+  - -r, --rand RANDOM         RANDOM est le nombre de transformations donné
+  - -s, --show                affiche une séquence d'exhibition (boucle infinie)
 
 
 ##                     RUBIK'S CUBE           
