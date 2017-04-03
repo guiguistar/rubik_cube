@@ -4,6 +4,7 @@
 import sys
 import os
 
+import random
 import datetime
 import argparse
 
@@ -14,7 +15,7 @@ from OpenGL.GLU import *
 
 from rubik_cube import Rubik_cube
 from rubik_tetrahedron import Rubik_tetrahedron
-from randomize_rubik import randomize
+from randomize_rubik import randomize,inverser
 from pygame_gestion_clavier import Gestion_clavier
 
 def main_parser():
@@ -23,10 +24,12 @@ def main_parser():
     parser.set_defaults(random=0)
     parser.set_defaults(cube=False)
     parser.set_defaults(tetrahedron=False)
+    parser.set_defaults(exhibition=False)
 
-    parser.add_argument('-c','--cube'  ,help='afficher Rubik\'s Cube'       ,dest="cube"       ,action='store_true')
-    parser.add_argument('-t','--tetra' ,help='afficher Rubik\'s Tetrahedron',dest="tetrahedron",action='store_true')
+    parser.add_argument('-c','--cube'  ,help='affiche Rubik\'s Cube'       ,dest="cube"        ,action='store_true')
+    parser.add_argument('-t','--tetra' ,help='affiche Rubik\'s Tetrahedron',dest="tetrahedron" ,action='store_true')
     parser.add_argument('-r','--rand'  ,help='RANDOM est le nombre de transformations donné'   ,dest="random")
+    parser.add_argument('-s','--show'  ,help='affiche une séquence d\'exhibition (boucle infi)',dest="exhibition",action='store_true')
 
     if len(sys.argv)==1:
         parser.print_help()
@@ -34,6 +37,18 @@ def main_parser():
     args = parser.parse_args()
 
     return args
+
+def text_to_screen(screen, text, x, y, size = 100,color = (200, 100, 100), font_type = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'):
+    try:
+
+        text = str(text)
+        font = pygame.font.Font(font_type, size)
+        text = font.render(text, True, color)
+        screen.blit(text, (x, y))
+
+    except Exception, e:
+        print 'Font Error, saw it coming'
+        raise e
 
 
 if __name__=='__main__':
@@ -52,15 +67,18 @@ if __name__=='__main__':
     cube=args.cube
     tetrahedron=args.tetrahedron
     random_rubik=int(args.random)
+    exhibition=args.exhibition
 
 
     # pygame
     pygame.init()
-    display = (600,600)
+    display = (1200,600)
     infopygame = pygame.display.Info()
 
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGLBLIT)
+    pygame.display.set_caption('Rubik Pygame/GL Code --- ESME Sudria Lille')
+
     
     # fmv : en fait cette valeur est bien trop basse à 1
     # vitesse de rotation de la caméra
@@ -134,7 +152,24 @@ if __name__=='__main__':
 
     # randomize
     if random_rubik > 0:
+        print separator 
+        print "appel de la fonction randomize"
+        print random_rubik," operations/transformations"
+        print separator 
         ops=randomize(rubik,random_rubik)
+        for op in ops:
+            rubik.operations_queue.append(op)
+
+    if exhibition:
+        print separator 
+        print "                    EXHIBITION MODE"
+        print separator 
+        ops_random=randomize(rubik,100)
+
+        textString=""" ESME SUDRIA Lille 
+                                Labo d'informatique.
+                                Auteurs : Guillaume Roux / Filipe Vasconcelos\n
+                    """
 
     # ===================
     #   main event loop
@@ -144,16 +179,19 @@ if __name__=='__main__':
 
         # Gestion des événements clavier
         for event in pygame.event.get(): gestion_clavier.check_event_key(event)
-        
-        # Mouvements de la caméra
-        if gestion_clavier.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
-        if gestion_clavier.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
-        if gestion_clavier.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
-        if gestion_clavier.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
-        if gestion_clavier.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
-        if gestion_clavier.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
        
+        if not exhibition :
+            # Mouvements de la caméra
+            if gestion_clavier.fleche_gauche: glRotatef(pas_rotation_camera, 0, 1, 0)
+            if gestion_clavier.fleche_droite: glRotatef(-pas_rotation_camera, 0, 1, 0)
+            if gestion_clavier.fleche_haut:   glRotatef(pas_rotation_camera, 1, 0, 0)
+            if gestion_clavier.fleche_bas:    glRotatef(-pas_rotation_camera, 1, 0, 0)
+            if gestion_clavier.touche_p:      glRotatef(pas_rotation_camera, 0, 0, 1)
+            if gestion_clavier.touche_m:      glRotatef(-pas_rotation_camera, 0, 0, 1)
+        else:
+            glRotatef(1, 1., 1., 1.)
 
+        text_to_screen(screen, textString, 1000,400)
         # ======================================
         # Gestion des animations des opérations
         # ======================================
@@ -169,6 +207,11 @@ if __name__=='__main__':
         else:
             rubik.transformer_rubik(op=operation_courante,u=pas_rotation_operation)
             taux_transition_operation += pas_rotation_operation
+        if exhibition :
+            op=random.choice(ops_random)
+            rubik.operations_queue.append(op)
+
+            
 
         # Mise à jour de l'affichage
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
@@ -177,4 +220,3 @@ if __name__=='__main__':
         pygame.display.flip()
 
         #pygame.time.wait(10) # Enlevable
-
