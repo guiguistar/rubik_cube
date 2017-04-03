@@ -29,7 +29,7 @@ def main_parser():
     parser.add_argument('-c','--cube'  ,help='affiche Rubik\'s Cube'       ,dest="cube"        ,action='store_true')
     parser.add_argument('-t','--tetra' ,help='affiche Rubik\'s Tetrahedron',dest="tetrahedron" ,action='store_true')
     parser.add_argument('-r','--rand'  ,help='RANDOM est le nombre de transformations donné'   ,dest="random")
-    parser.add_argument('-s','--show'  ,help='affiche une séquence d\'exhibition (boucle infi)',dest="exhibition",action='store_true')
+    parser.add_argument('-s','--show'  ,help='affiche une séquence d\'exhibition (boucle infinie)',dest="exhibition",action='store_true')
 
     if len(sys.argv)==1:
         parser.print_help()
