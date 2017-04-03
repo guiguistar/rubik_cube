@@ -85,7 +85,7 @@ def randomize(rubik,nop_random):
     iop=0
     while iop < nop_random :
         op=random.choice(operations_random)
-        rubik.operations_queue.append(op)
+        #rubik.operations_queue.append(op)
         all_operations.append(op)
         iop+=1
 
@@ -134,6 +134,8 @@ if __name__=='__main__':
     #test(rubik_cube)
     ops=randomize(rubik_cube,30)
     inversops=inverser(ops)
+    for op in ops:
+        rubik_cube.operations_queue.append(op)
     for op in inversops:
     #    print "inverse",op
         rubik_cube.operations_queue.append(op)
