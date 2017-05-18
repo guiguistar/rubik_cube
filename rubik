@@ -74,6 +74,7 @@ if __name__=='__main__':
     pygame.init()
     display = (1200,600)
     infopygame = pygame.display.Info()
+    horloge = pygame.time.Clock()
 
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
     screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGLBLIT)
@@ -82,13 +83,13 @@ if __name__=='__main__':
     
     # fmv : en fait cette valeur est bien trop basse à 1
     # vitesse de rotation de la caméra
-    pas_rotation_camera = 10 
+    pas_rotation_camera = 1 
     # Pour tester quand une opération est complète; voir ci-après
     taux_transition_operation = 0 
     # pas de rotation pour les operations/transformation 
     # fmv : 20% c'est pas mal chez moi
     # correspond à la varible u dans transformer_rubik
-    pas_rotation_operation = 0.2
+    pas_rotation_operation = 0.04
 
     # classe gestion clavier global qq soit le polyedre
     gestion_clavier=Gestion_clavier()
@@ -220,3 +221,4 @@ if __name__=='__main__':
         pygame.display.flip()
 
         #pygame.time.wait(10) # Enlevable
+        horloge.tick(60) # nombre maximum de frame par seconde
