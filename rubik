@@ -53,13 +53,16 @@ def text_to_screen(screen, text, x, y, size = 100,color = (200, 100, 100), font_
 
 if __name__=='__main__':
 
+    textString="""  ESME SUDRIA Lille
+  Labo d'informatique.
+  Auteurs : Guillaume Roux / Filipe Vasconcelos\n"""
+    
     separator=60*"="
     now = datetime.datetime.now()
 
     print separator
-    print now.strftime("%Y-%m-%d %H:%M")
-    print "auteurs : Guillaume Roux / Filipe Vasconcelos "
-    print "ESME Sudria Lille "
+    print now.strftime("%Y-%m-%d %H:%M\n")
+    print textString
     print separator
 
 
@@ -151,6 +154,16 @@ if __name__=='__main__':
         glTranslatef(0.0,0.0,-8) 
         glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
+    # les options -r et -s requierent que la variable rubik soit définie
+    if not  (cube or tetrahedron):
+        # instanciation du Rubik_cube
+        rubik = Rubik_cube(ratio=display[0]/display[1])
+        rubik.gerer_affichage(gestion_clavier)
+        # pyOpenGl
+        gluPerspective(45, rubik.ratio, 0.1, 50.0)
+        glTranslatef(0.0,0.0,-30) 
+        glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
+  
     # randomize
     if random_rubik > 0:
         print separator 
@@ -166,11 +179,6 @@ if __name__=='__main__':
         print "                    EXHIBITION MODE"
         print separator 
         ops_random=randomize(rubik,100)
-
-        textString=""" ESME SUDRIA Lille 
-                                Labo d'informatique.
-                                Auteurs : Guillaume Roux / Filipe Vasconcelos\n
-                    """
 
     # ===================
     #   main event loop
