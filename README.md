@@ -24,7 +24,9 @@
 
   - [q]     : quitter
 
-
+ #### capture d'écran
+ 
+ ![Image du cube]/img/capture_cube.png?raw=true)
 
 
 ##                     RUBIK'S TETRAHEDRON      
@@ -42,4 +44,6 @@
 
  - [q]     : quitter
 
-
+ #### capture d'écran
+ 
+ ![Image du tétraèdre]/img/capture_tetrahedre.png?raw=true)
