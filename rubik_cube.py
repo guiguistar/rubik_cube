@@ -173,7 +173,7 @@ if __name__=='__main__':
     display = (600,600)
     infopygame = pygame.display.Info()
 
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
+    #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
     
     # fmv : en fait cette valeur est bien trop basse à 1
