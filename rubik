@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
 
 import sys
@@ -47,7 +47,7 @@ def text_to_screen(screen, text, x, y, size = 100,color = (200, 100, 100),font_t
         screen.blit(text, (x, y))
 
     except Exception as e:
-        print=('Font Error, saw it coming')
+        print('Font Error, saw it coming')
         raise e
 
 
