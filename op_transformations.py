@@ -76,6 +76,6 @@ def translation(sommet, vecteur):
     
 if __name__=='__main__':
 
-    print "test block needed"
+    print("test block needed")
 
 

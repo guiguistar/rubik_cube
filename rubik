@@ -38,16 +38,16 @@ def main_parser():
 
     return args
 
-def text_to_screen(screen, text, x, y, size = 100,color = (200, 100, 100), font_type = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'):
+def text_to_screen(screen, text, x, y, size = 100,color = (200, 100, 100),font_type="arial"):
     try:
 
         text = str(text)
-        font = pygame.font.Font(font_type, size)
+        font = pygame.font.SysFont(font_type, size)
         text = font.render(text, True, color)
         screen.blit(text, (x, y))
 
-    except Exception, e:
-        print 'Font Error, saw it coming'
+    except Exception as e:
+        print=('Font Error, saw it coming')
         raise e
 
 
@@ -60,10 +60,10 @@ if __name__=='__main__':
     separator=60*"="
     now = datetime.datetime.now()
 
-    print separator
-    print now.strftime("%Y-%m-%d %H:%M\n")
-    print textString
-    print separator
+    print(separator)
+    print(now.strftime("%Y-%m-%d %H:%M\n"))
+    print(textString)
+    print(separator)
 
 
     args = main_parser()
@@ -98,25 +98,25 @@ if __name__=='__main__':
     gestion_clavier=Gestion_clavier()
 
     if cube :
-        print "" 
-        print separator 
-        print "                     RUBIK'S CUBE           "
-        print separator
-        print "                                "
-        print " affichage et gestion du clavier:"
-        print " touches : "
-        print 
-        print " transformation : "
-        print " [esy]   : rotation autour de Y "
-        print " [rdx]   : rotation autour de X "
-        print " [tfc]   : rotation autour de Z "
-        print 
-        print " mouvement caméra fleche/[pm]:"
-        print " [a]     : position d'origine de la caméra"
-        print 
-        print " [q]     : quitter"
-        print 
-        print separator
+        print("")
+        print(separator)
+        print("                     RUBIK'S CUBE           ")
+        print(separator)
+        print("                                ")
+        print(" affichage et gestion du clavier:")
+        print(" touches : ")
+        print()
+        print(" transformation : ")
+        print(" [esy]   : rotation autour de Y ")
+        print(" [rdx]   : rotation autour de X ")
+        print(" [tfc]   : rotation autour de Z ")
+        print()
+        print(" mouvement caméra fleche/[pm]:")
+        print(" [a]     : position d'origine de la caméra")
+        print()
+        print(" [q]     : quitter")
+        print()
+        print(separator)
         # instanciation du Rubik_cube
         rubik = Rubik_cube(ratio=display[0]/display[1])
         rubik.gerer_affichage(gestion_clavier)
@@ -126,26 +126,26 @@ if __name__=='__main__':
         glEnable(GL_DEPTH_TEST) # Permet de cacher les objets placés derrière d'autres objets
 
     if tetrahedron :
-        print "" 
-        print separator 
-        print "                     RUBIK'S TETRAHEDRON      "
-        print separator
-        print "                                "
-        print " affichage et gestion du clavier:"
-        print " touches : "
-        print 
-        print " transformation : "
-        print " [esy]   : rotation autour de GA"
-        print " [rdx]   : rotation autour de GB"
-        print " [tfc]   : rotation autour de GC"
-        print " [zgv]   : rotation autour de GD"
-        print 
-        print " mouvement caméra fleche/[pm]:"
-        print " [a]     : position d'origine de la caméra"
-        print ""
-        print " [q]     : quitter"
-        print 
-        print separator
+        print("")
+        print(separator)
+        print("                     RUBIK'S TETRAHEDRON      ")
+        print(separator)
+        print("                                ")
+        print(" affichage et gestion du clavier:")
+        print(" touches : ")
+        print()
+        print(" transformation : ")
+        print(" [esy]   : rotation autour de GA")
+        print(" [rdx]   : rotation autour de GB")
+        print(" [tfc]   : rotation autour de GC")
+        print(" [zgv]   : rotation autour de GD")
+        print()
+        print(" mouvement caméra fleche/[pm]:")
+        print(" [a]     : position d'origine de la caméra")
+        print("")
+        print(" [q]     : quitter")
+        print()
+        print(separator)
         # instanciation du Rubik_tetrahedron
         rubik = Rubik_tetrahedron(ratio=display[0]/display[1])
         rubik.gerer_affichage(gestion_clavier)
@@ -166,24 +166,24 @@ if __name__=='__main__':
   
     # randomize
     if random_rubik > 0:
-        print separator 
-        print "appel de la fonction randomize"
-        print random_rubik," operations/transformations"
-        print separator 
+        print(separator)
+        print("appel de la fonction randomize")
+        print(random_rubik," operations/transformations")
+        print(separator)
         ops=randomize(rubik,random_rubik)
         for op in ops:
             rubik.operations_queue.append(op)
 
     if exhibition:
-        print separator 
-        print "                    EXHIBITION MODE"
-        print separator 
+        print(separator)
+        print("                    EXHIBITION MODE")
+        print(separator)
         ops_random=randomize(rubik,100)
 
     # ===================
     #   main event loop
     # ===================
-    print "Running rubik ..."
+    print("Running rubik ...")
     while True:
 
         # Gestion des événements clavier

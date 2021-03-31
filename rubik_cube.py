@@ -144,30 +144,30 @@ class Rubik_cube:
 if __name__=='__main__':
 
     separator=60*"="
-    print separator
-    print "Bloc testant la classe Rubik's cube"
-    print "affichage et gestion du clavier "
-    print separator
-    print "                                "
-    print "              Y                 "
-    print "                                "
-    print "              |                 "
-    print "              |                 "
-    print "              |----- X          "
-    print "             /                  "
-    print "            /                   "
-    print "           Z                    "
-    print "                                "
-    print " touches : "
-    print 
-    print " transformation : "
-    print " [esy]   : rotation autour de Y "
-    print " [rdx]   : rotation autour de X "
-    print " [tfc]   : rotation autour de Z "
-    print " [q]     : quitter"
-    print 
-    print " mouvement caméra fleche/[pm]:"
-    print separator
+    print(separator)
+    print("Bloc testant la classe Rubik's cube")
+    print("affichage et gestion du clavier ")
+    print(separator)
+    print("                                ")
+    print("              Y                 ")
+    print("                                ")
+    print("              |                 ")
+    print("              |                 ")
+    print("              |----- X          ")
+    print("             /                  ")
+    print("            /                   ")
+    print("           Z                    ")
+    print("                                ")
+    print(" touches : ")
+    print()
+    print(" transformation : ")
+    print(" [esy]   : rotation autour de Y ")
+    print(" [rdx]   : rotation autour de X ")
+    print(" [tfc]   : rotation autour de Z ")
+    print(" [q]     : quitter")
+    print()
+    print(" mouvement caméra fleche/[pm]:")
+    print(separator)
     # pygame
     pygame.init()
     display = (600,600)

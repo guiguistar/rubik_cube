@@ -42,7 +42,7 @@ class Gestion_clavier():
 
         if event.type == pygame.QUIT:
             pygame.quit()
-            quit()
+            #quit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:  self.fleche_gauche = True
             if event.key == pygame.K_RIGHT: self.fleche_droite = True
@@ -69,9 +69,9 @@ class Gestion_clavier():
 #        print self.keys[-1]
 
 def fonction_e(args):
-    print "in fonction_e"
+    print("in fonction_e")
 def fonction_f(args):
-    print "in fonction_f"
+    print("in fonction_f")
 def fonction_quit(args):
     pygame.quit()
     quit()
@@ -79,14 +79,14 @@ def fonction_quit(args):
 if __name__=="__main__":
 
     separator=60*"="
-    print separator
-    print "Bloc de test de la classe Gestion_clavier"
-    print "trois touches :"
-    print "              e : appel fonction_e"
-    print "              f : appel fonction_f"
-    print "              q : quitter pygame  "
-    print separator
-    print 
+    print(separator)
+    print("Bloc de test de la classe Gestion_clavier")
+    print("trois touches :")
+    print("              e : appel fonction_e")
+    print("              f : appel fonction_f")
+    print("              q : quitter pygame  ")
+    print(separator)
+    print()
     # pygame
     pygame.init()
     display = (600,600)
@@ -105,10 +105,10 @@ if __name__=="__main__":
         
         for event in pygame.event.get(): camera.check_event_key(event)
 
-        if camera.fleche_gauche: print "fleche gauche"
-        if camera.fleche_droite: print "fleche droite" 
-        if camera.fleche_haut:   print "fleche haut" 
-        if camera.fleche_bas:    print "fleche bas" 
-        if camera.touche_p:      print "touche p" 
-        if camera.touche_m:      print "touche m" 
+        if camera.fleche_gauche: print("fleche gauche")
+        if camera.fleche_droite: print("fleche droite")
+        if camera.fleche_haut:   print("fleche haut")
+        if camera.fleche_bas:    print("fleche bas")
+        if camera.touche_p:      print("touche p")
+        if camera.touche_m:      print("touche m")
 

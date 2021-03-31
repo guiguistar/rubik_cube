@@ -193,29 +193,29 @@ class Rubik_tetrahedron:
 if __name__=='__main__':
 
     separator=60*"="
-    print separator
-    print "Bloc testant la classe Rubik's cube"
-    print "affichage et gestion du clavier "
-    print separator
-    print "                                "
-    print "              A                 "
-    print "             /|\                "
-    print "            / | \               "
-    print "           /  D  \              "
-    print "          B-------C             "
-    print "                                "
-    print "rotation autour des axes passant"
-    print "par le centre de gravité (G) et "
-    print "les sommets du tetraèdre        "
-    print 
-    print " touches : "
-    print " [esy]   : rotation autour de GA"
-    print " [rdx]   : rotation autour de GB"
-    print " [tfc]   : rotation autour de GC"
-    print " [zgv]   : rotation autour de GD"
-    print " [q]     : quitter"
-    print 
-    print separator
+    print(separator)
+    print("Bloc testant la classe Rubik's cube")
+    print("affichage et gestion du clavier ")
+    print(separator)
+    print("                                ")
+    print("              A                 ")
+    print("             /|\                ")
+    print("            / | \               ")
+    print("           /  D  \              ")
+    print("          B-------C             ")
+    print("                                ")
+    print("rotation autour des axes passant")
+    print("par le centre de gravité (G) et ")
+    print("les sommets du tetraèdre        ")
+    print()
+    print(" touches : ")
+    print(" [esy]   : rotation autour de GA")
+    print(" [rdx]   : rotation autour de GB")
+    print(" [tfc]   : rotation autour de GC")
+    print(" [zgv]   : rotation autour de GD")
+    print(" [q]     : quitter")
+    print()
+    print(separator)
     # pygame
     pygame.init()
     display = (600,600)

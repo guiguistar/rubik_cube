@@ -96,11 +96,11 @@ def randomize(rubik,nop_random):
 if __name__=='__main__':
 
     separator=60*"="
-    print separator
-    print "Bloc testant la fonction randomize"
-    print "affichage et \"randomisation\" d'un rubik's cube"
-    print "ici la fonction génère 30 transformations aléatoires du cube"
-    print separator
+    print(separator)
+    print("Bloc testant la fonction randomize")
+    print("affichage et \"randomisation\" d'un rubik's cube")
+    print("ici la fonction génère 30 transformations aléatoires du cube")
+    print(separator)
     # pygame
     pygame.init()
     display = (600,600)
@@ -137,7 +137,7 @@ if __name__=='__main__':
     for op in ops:
         rubik_cube.operations_queue.append(op)
     for op in inversops:
-    #    print "inverse",op
+    #    print("inverse",op)
         rubik_cube.operations_queue.append(op)
 
     # ===================
