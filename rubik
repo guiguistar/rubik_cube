@@ -79,7 +79,7 @@ if __name__=='__main__':
     infopygame = pygame.display.Info()
     horloge = pygame.time.Clock()
 
-    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
+    #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (infopygame.current_w,infopygame.current_h)
     screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGLBLIT)
     pygame.display.set_caption('Rubik Pygame/GL Code --- ESME Sudria Lille')
 
